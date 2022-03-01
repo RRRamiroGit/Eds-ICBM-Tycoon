@@ -39,7 +39,7 @@ public class ICBMTycoon {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setMinimumSize(new Dimension(windowWidth, windowHeight));
-		frame.setTitle("Ed's ICBM Game");
+		frame.setTitle("Ed's ICBM Tycoon");
         frame.pack();
         frame.setVisible(true);
 	}
