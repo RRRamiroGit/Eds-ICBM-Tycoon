@@ -57,6 +57,8 @@ public class ICBMTycoon implements ActionListener {
 			changeScreen(new Begin1());
 		} else if (com.equals("exitGame")) {
 			System.exit(0); // Exit the program
+		} else if (com.equals("credit")) {
+			changeScreen(new Credits());
 		} else if (com.equals("backWelcome")) {
 			changeScreen(new Welcome());
 		} else if (com.equals("beginContinue1")) {
@@ -86,6 +88,7 @@ public class ICBMTycoon implements ActionListener {
 	class Welcome extends Page {
 		JButton startButton = new JButton("Start!");
 		JButton exitButton = new JButton("Exit");
+		JButton creditButton = new JButton("Credit");
 		JLabel welcome = new JLabel("Welcome to Ed's ICBM Tycoon! Press the Start button to continue");
 		JLabel author = new JLabel("Developed by Ramiro");
 		JLabel author2 = new JLabel("Concept by Ed");
@@ -108,6 +111,12 @@ public class ICBMTycoon implements ActionListener {
 			exitButton.setBounds(552, 238, buttonWidth, buttonHeight);
 			exitButton.addActionListener(inst);
 			exitButton.setActionCommand("exitGame");
+			
+			icbmImage.add(creditButton);
+			creditButton.setFont(new Font("Arial", Font.PLAIN, 34));
+			creditButton.setBounds(cenElement(360), 305, 360, buttonHeight);
+			creditButton.addActionListener(inst);
+			creditButton.setActionCommand("credit");
 			
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
@@ -135,6 +144,54 @@ public class ICBMTycoon implements ActionListener {
 		@Override
 		public void remove() {
 			panel.remove(icbmImage);
+		}
+	}
+	
+	class Credits extends Page {
+		JButton backWelcome = new JButton("<");
+		JLabel text1 = new JLabel("Ed's ICBM Tycoon");
+		JLabel text2 = new JLabel("© 2022 Ramiro Salazar");
+		JLabel text3 = new JLabel("Developed by Ramiro Salazar");
+		JLabel text4 = new JLabel("Ideas by Ed Ruiz");
+		JLabel text5 = new JLabel("Welcome page image from nknews.org");
+		
+		public Credits() {
+			panel.add(backWelcome);
+			backWelcome.setFont(new Font("Arial", Font.PLAIN, 38));
+			backWelcome.setBounds(10, 10, 42, 42);
+			backWelcome.addActionListener(inst);
+			backWelcome.setActionCommand("backWelcome");
+			backWelcome.setMargin(new Insets(0, 0, 0, 0));
+			
+			panel.add(text1);
+			text1.setFont(new Font("Arial", Font.PLAIN, 18));
+			text1.setBounds(10, 58, 600, 20);
+			
+			panel.add(text2);
+			text2.setFont(new Font("Arial", Font.PLAIN, 18));
+			text2.setBounds(10, 78, 600, 20);
+			
+			panel.add(text3);
+			text3.setFont(new Font("Arial", Font.PLAIN, 18));
+			text3.setBounds(10, 98, 600, 20);
+			
+			panel.add(text4);
+			text4.setFont(new Font("Arial", Font.PLAIN, 18));
+			text4.setBounds(10, 118, 600, 20);
+			
+			panel.add(text5);
+			text5.setFont(new Font("Arial", Font.PLAIN, 18));
+			text5.setBounds(10, 138, 600, 20);
+		}
+		
+		@Override
+		public void remove() {
+			panel.remove(backWelcome);
+			panel.remove(text1);
+			panel.remove(text2);
+			panel.remove(text3);
+			panel.remove(text4);
+			panel.remove(text5);
 		}
 	}
 	
