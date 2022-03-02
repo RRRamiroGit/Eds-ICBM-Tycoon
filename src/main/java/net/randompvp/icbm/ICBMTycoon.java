@@ -151,7 +151,7 @@ public class ICBMTycoon implements ActionListener {
 		JLabel text2 = new JLabel("© 2022 Ramiro Salazar");
 		JLabel text3 = new JLabel("Developed by Ramiro Salazar");
 		JLabel text4 = new JLabel("Ideas by Ed Ruiz");
-		JLabel text5 = new JLabel("Welcome page image from nknews.org");
+		JLabel text5 = new JLabel("Welcome page image from Rodong Sinmun");
 		
 		public Credits() {
 			panel.add(backWelcome);
