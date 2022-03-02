@@ -64,6 +64,13 @@ public class ICBMTycoon implements ActionListener {
 			changeScreen(new Begin2());
 		} else if (com.equals("beginContinue2")) {
 			changeScreen(new EnterName());
+		} else if (com.equals("beginName")) {
+			EnterName nameCl = (EnterName) screen;
+			if (nameCl.getName().equals("")) {
+				nameCl.emptyName();
+			} else {
+				
+			}
 		}
 	}
 	
@@ -284,6 +291,7 @@ public class ICBMTycoon implements ActionListener {
 	class EnterName extends Page {
 		JLabel enterNameText = new JLabel("Please enter your name below!");
 		JTextField nameBox = new JTextField();
+		JLabel emptyName = new JLabel("You can't leave the box empty!");
 		JButton continueNext = new JButton("Let's Begin!");
 		
 		public EnterName() {
@@ -294,6 +302,11 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(nameBox);
 			nameBox.setBounds(cenElement(300), 120, 300, 22);
 			
+			panel.add(emptyName);
+			emptyName.setForeground(Color.RED);
+			emptyName.setBounds(682, 120, 180, 22);
+			emptyName.setVisible(false);
+			
 			panel.add(continueNext);
 			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
 			continueNext.setBounds(cenElement(240), 320, 240, 46);
@@ -301,10 +314,19 @@ public class ICBMTycoon implements ActionListener {
 			continueNext.setActionCommand("beginName");
 		}
 		
+		public String getName() {
+			return nameBox.getText();
+		}
+		
+		public void emptyName() {
+			emptyName.setVisible(true);
+		}
+		
 		@Override
 		public void remove() {
 			panel.remove(enterNameText);
 			panel.remove(nameBox);
+			panel.remove(emptyName);
 			panel.remove(continueNext);
 		}
 	}
