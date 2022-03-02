@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class ICBMTycoon implements ActionListener {
 	
@@ -61,6 +62,8 @@ public class ICBMTycoon implements ActionListener {
 			changeScreen(new Welcome());
 		} else if (com.equals("beginContinue1")) {
 			changeScreen(new Begin2());
+		} else if (com.equals("beginContinue2")) {
+			changeScreen(new EnterName());
 		}
 	}
 	
@@ -274,6 +277,34 @@ public class ICBMTycoon implements ActionListener {
 		public void remove() {
 			panel.remove(text1);
 			panel.remove(text2);
+			panel.remove(continueNext);
+		}
+	}
+	
+	class EnterName extends Page {
+		JLabel enterNameText = new JLabel("Please enter your name below!");
+		JTextField nameBox = new JTextField();
+		JButton continueNext = new JButton("Let's Begin!");
+		
+		public EnterName() {
+			panel.add(enterNameText);
+			enterNameText.setFont(new Font("Arial", Font.PLAIN, 34));
+			enterNameText.setBounds(cenElement(460), 58, 460, 36);
+			
+			panel.add(nameBox);
+			nameBox.setBounds(cenElement(300), 120, 300, 22);
+			
+			panel.add(continueNext);
+			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
+			continueNext.setBounds(cenElement(240), 320, 240, 46);
+			continueNext.addActionListener(inst);
+			continueNext.setActionCommand("beginName");
+		}
+		
+		@Override
+		public void remove() {
+			panel.remove(enterNameText);
+			panel.remove(nameBox);
 			panel.remove(continueNext);
 		}
 	}
