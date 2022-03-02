@@ -87,23 +87,28 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(icbmImage);
 			icbmImage.setBounds(0, 0, 1024, 576);
 			icbmImage.setOpaque(true);
+			
 			icbmImage.add(startButton);
 			startButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			startButton.setBounds(332, 238, buttonWidth, buttonHeight);
 			startButton.addActionListener(inst);
 			startButton.setActionCommand("startGame");
+			
 			icbmImage.add(exitButton);
 			exitButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			exitButton.setBounds(552, 238, buttonWidth, buttonHeight);
 			exitButton.addActionListener(inst);
 			exitButton.setActionCommand("exitGame");
+			
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
 			welcome.setBounds(102, 50, 820, 32);
 			welcome.setForeground(Color.WHITE);
+			
 			icbmImage.add(author);
 			author.setBounds(452, 85, 120, 14);
 			author.setForeground(Color.WHITE);
+			
 			icbmImage.add(author2);
 			author2.setBounds(472, 102, 80, 14);
 			author2.setForeground(Color.WHITE);
