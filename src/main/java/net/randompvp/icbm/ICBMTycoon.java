@@ -48,7 +48,6 @@ public class ICBMTycoon implements ActionListener {
         changeScreen(new Welcome()); // Make the welcome screen appear
 	}
 	
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("startGame")) {
@@ -64,7 +63,7 @@ public class ICBMTycoon implements ActionListener {
 		screen = newScreen; // Set screen variable
 		frame.setVisible(true);
 	}
-
+	
 	public static void main(String[] args) {
 		new ICBMTycoon();
 	}
@@ -107,7 +106,6 @@ public class ICBMTycoon implements ActionListener {
 			icbmImage.add(author2);
 			author2.setBounds(472, 102, 80, 14);
 			author2.setForeground(Color.WHITE);
-			
 		}
 		
 		JLabel initializeImage() {
@@ -118,11 +116,11 @@ public class ICBMTycoon implements ActionListener {
 			}
 			return null;
 		}
-
+		
 		@Override
 		public void remove() {
 			panel.remove(icbmImage);
 		}
 	}
-
+	
 }
