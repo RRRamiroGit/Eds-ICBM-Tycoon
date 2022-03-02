@@ -96,7 +96,6 @@ public class ICBMTycoon implements ActionListener {
 			int buttonHeight = 50;
 			panel.add(icbmImage);
 			icbmImage.setBounds(0, 0, windowWidth, windowHeight);
-			icbmImage.setOpaque(true);
 			
 			icbmImage.add(startButton);
 			startButton.setFont(new Font("Arial", Font.PLAIN, 34));
