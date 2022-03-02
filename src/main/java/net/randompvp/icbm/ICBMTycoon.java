@@ -59,6 +59,8 @@ public class ICBMTycoon implements ActionListener {
 			System.exit(0); // Exit the program
 		} else if (com.equals("backWelcome")) {
 			changeScreen(new Welcome());
+		} else if (com.equals("beginContinue1")) {
+			changeScreen(new Begin2());
 		}
 	}
 	
@@ -190,6 +192,35 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(text5);
 			panel.remove(continueNext);
 			panel.remove(backWelcome);
+		}
+	}
+	
+	class Begin2 extends Page {
+		JLabel text1 = new JLabel("After the tragic event the world prepared itself");
+		JLabel text2 = new JLabel("for nuclear war...");
+		JButton continueNext = new JButton("Continue");
+		
+		public Begin2() {
+			panel.add(text1);
+			text1.setFont(new Font("Arial", Font.PLAIN, 34));
+			text1.setBounds(cenElement(670), 58, 670, 36);
+			
+			panel.add(text2);
+			text2.setFont(new Font("Arial", Font.PLAIN, 34));
+			text2.setBounds(cenElement(250), 90, 250, 36);
+			
+			panel.add(continueNext);
+			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
+			continueNext.setBounds(cenElement(220), 320, 220, 46);
+			continueNext.addActionListener(inst);
+			continueNext.setActionCommand("beginContinue2");
+		}
+		
+		@Override
+		public void remove() {
+			panel.remove(text1);
+			panel.remove(text2);
+			panel.remove(continueNext);
 		}
 	}
 	
