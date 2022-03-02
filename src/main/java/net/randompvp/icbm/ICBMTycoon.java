@@ -44,6 +44,7 @@ public class ICBMTycoon implements ActionListener {
 		frame.setResizable(false); // Prevent the window from being resized
 		frame.setMinimumSize(new Dimension(windowWidth, windowHeight)); // Set the dimensions of the window
 		frame.setTitle("Ed's ICBM Tycoon"); // Set the title of the window
+		frame.setVisible(true);
         frame.pack();
         changeScreen(new Welcome()); // Make the welcome screen appear
 	}
@@ -51,7 +52,7 @@ public class ICBMTycoon implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("startGame")) {
-			
+			changeScreen(new Begin1());
 		} else if (e.getActionCommand().equals("exitGame")) {
 			System.exit(0); // Exit the program
 		}
@@ -61,7 +62,7 @@ public class ICBMTycoon implements ActionListener {
 		if (screen != null) // If there is a screen then remove it first
 			screen.remove();
 		screen = newScreen; // Set screen variable
-		frame.setVisible(true);
+		frame.repaint();
 	}
 	
 	public static void main(String[] args) {
@@ -89,12 +90,12 @@ public class ICBMTycoon implements ActionListener {
 			icbmImage.add(startButton);
 			startButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			startButton.setBounds(332, 238, buttonWidth, buttonHeight);
-			startButton.addActionListener(ICBMTycoon.inst);
+			startButton.addActionListener(inst);
 			startButton.setActionCommand("startGame");
 			icbmImage.add(exitButton);
 			exitButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			exitButton.setBounds(552, 238, buttonWidth, buttonHeight);
-			exitButton.addActionListener(ICBMTycoon.inst);
+			exitButton.addActionListener(inst);
 			exitButton.setActionCommand("exitGame");
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
@@ -120,6 +121,53 @@ public class ICBMTycoon implements ActionListener {
 		@Override
 		public void remove() {
 			panel.remove(icbmImage);
+		}
+	}
+	
+	class Begin1 extends Page {
+		JLabel text1 = new JLabel("You have been ordered by a Russian government official named");
+		JLabel text2 = new JLabel("Ed HHahdhcuud to send ICBM’s to the United States as while the");
+		JLabel text3 = new JLabel("United States were transporting a nuclear warhead closer to");
+		JLabel text4 = new JLabel("Russian borders, they dropped the warhead by accident, causing");
+		JLabel text5 = new JLabel("hundreds of thousands of causalities.");
+		JButton continueNext = new JButton("Continue");
+		
+		public Begin1() {
+			panel.add(text1);
+			text1.setFont(new Font("Arial", Font.PLAIN, 34));
+			text1.setBounds(42, 40, 940, 36);
+			
+			panel.add(text2);
+			text2.setFont(new Font("Arial", Font.PLAIN, 34));
+			text2.setBounds(27, 72, 970, 36);
+			
+			panel.add(text3);
+			text3.setFont(new Font("Arial", Font.PLAIN, 34));
+			text3.setBounds(72, 104, 880, 36);
+			
+			panel.add(text4);
+			text4.setFont(new Font("Arial", Font.PLAIN, 34));
+			text4.setBounds(37, 136, 950, 36);
+			
+			panel.add(text5);
+			text5.setFont(new Font("Arial", Font.PLAIN, 34));
+			text5.setBounds(237, 168, 550, 36);
+			
+			panel.add(continueNext);
+			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
+			continueNext.setBounds(402, 320, 220, 46);
+			continueNext.addActionListener(inst);
+			continueNext.setActionCommand("beginContinue1");
+		}
+		
+		@Override
+		public void remove() {
+			panel.remove(text1);
+			panel.remove(text2);
+			panel.remove(text3);
+			panel.remove(text4);
+			panel.remove(text5);
+			panel.remove(continueNext);
 		}
 	}
 	
