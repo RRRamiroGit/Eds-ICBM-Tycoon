@@ -65,6 +65,10 @@ public class ICBMTycoon implements ActionListener {
 		frame.repaint();
 	}
 	
+	int cenElement(int width) {
+		return (windowWidth - width) / 2;
+	}
+	
 	public static void main(String[] args) {
 		new ICBMTycoon();
 	}
@@ -102,15 +106,15 @@ public class ICBMTycoon implements ActionListener {
 			
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
-			welcome.setBounds(102, 50, 820, 32);
+			welcome.setBounds(cenElement(820), 50, 820, 32);
 			welcome.setForeground(Color.WHITE);
 			
 			icbmImage.add(author);
-			author.setBounds(452, 85, 120, 14);
+			author.setBounds(cenElement(120), 85, 120, 14);
 			author.setForeground(Color.WHITE);
 			
 			icbmImage.add(author2);
-			author2.setBounds(472, 102, 80, 14);
+			author2.setBounds(cenElement(80), 102, 80, 14);
 			author2.setForeground(Color.WHITE);
 		}
 		
@@ -140,27 +144,27 @@ public class ICBMTycoon implements ActionListener {
 		public Begin1() {
 			panel.add(text1);
 			text1.setFont(new Font("Arial", Font.PLAIN, 34));
-			text1.setBounds(42, 40, 940, 36);
+			text1.setBounds(cenElement(940), 40, 940, 36);
 			
 			panel.add(text2);
 			text2.setFont(new Font("Arial", Font.PLAIN, 34));
-			text2.setBounds(27, 72, 970, 36);
+			text2.setBounds(cenElement(970), 72, 970, 36);
 			
 			panel.add(text3);
 			text3.setFont(new Font("Arial", Font.PLAIN, 34));
-			text3.setBounds(72, 104, 880, 36);
+			text3.setBounds(cenElement(880), 104, 880, 36);
 			
 			panel.add(text4);
 			text4.setFont(new Font("Arial", Font.PLAIN, 34));
-			text4.setBounds(37, 136, 950, 36);
+			text4.setBounds(cenElement(950), 136, 950, 36);
 			
 			panel.add(text5);
 			text5.setFont(new Font("Arial", Font.PLAIN, 34));
-			text5.setBounds(237, 168, 550, 36);
+			text5.setBounds(cenElement(550), 168, 550, 36);
 			
 			panel.add(continueNext);
 			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
-			continueNext.setBounds(402, 320, 220, 46);
+			continueNext.setBounds(cenElement(220), 320, 220, 46);
 			continueNext.addActionListener(inst);
 			continueNext.setActionCommand("beginContinue1");
 		}
