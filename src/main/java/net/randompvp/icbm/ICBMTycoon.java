@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,8 +17,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class ICBMTycoon {
+public class ICBMTycoon implements ActionListener {
 	
+	public static ICBMTycoon inst;
 	int windowHeight = 576;
 	int windowWidth = 1024;
 	JFrame frame;
@@ -24,6 +27,7 @@ public class ICBMTycoon {
 	Page screen;
 	
 	public ICBMTycoon() {
+		inst = this;
 		frame = new JFrame();
 		panel = new JPanel();
 		panel.setLayout(null);
@@ -34,6 +38,16 @@ public class ICBMTycoon {
 		frame.setTitle("Ed's ICBM Tycoon");
         frame.pack();
         changeScreen(new Welcome());
+	}
+	
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("startGame")) {
+			
+		} else if (e.getActionCommand().equals("exitGame")) {
+			System.exit(0);
+		}
 	}
 	
 	void changeScreen(Page newScreen) {
@@ -68,9 +82,13 @@ public class ICBMTycoon {
 			icbmImage.add(startButton);
 			startButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			startButton.setBounds(332, 238, buttonWidth, buttonHeight);
+			startButton.addActionListener(ICBMTycoon.inst);
+			startButton.setActionCommand("startGame");
 			icbmImage.add(exitButton);
 			exitButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			exitButton.setBounds(552, 238, buttonWidth, buttonHeight);
+			exitButton.addActionListener(ICBMTycoon.inst);
+			exitButton.setActionCommand("exitGame");
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
 			welcome.setBounds(102, 50, 820, 32);
