@@ -27,8 +27,8 @@ public class ICBMTycoon implements ActionListener {
 	public static ICBMTycoon inst; // Instance of the class
 	
 	// Window dimensions
-	int windowHeight = 576;
-	int windowWidth = 1024;
+	final int windowHeight = 576;
+	final int windowWidth = 1024;
 	
 	JFrame frame;
 	JPanel panel;
