@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -55,6 +56,8 @@ public class ICBMTycoon implements ActionListener {
 			changeScreen(new Begin1());
 		} else if (e.getActionCommand().equals("exitGame")) {
 			System.exit(0); // Exit the program
+		} else if (e.getActionCommand().equals("backWelcome")) {
+			changeScreen(new Welcome());
 		}
 	}
 	
@@ -140,33 +143,41 @@ public class ICBMTycoon implements ActionListener {
 		JLabel text4 = new JLabel("Russian borders, they dropped the warhead by accident, causing");
 		JLabel text5 = new JLabel("hundreds of thousands of causalities.");
 		JButton continueNext = new JButton("Continue");
+		JButton backWelcome = new JButton("<");
 		
 		public Begin1() {
 			panel.add(text1);
 			text1.setFont(new Font("Arial", Font.PLAIN, 34));
-			text1.setBounds(cenElement(940), 40, 940, 36);
+			text1.setBounds(cenElement(940), 58, 940, 36);
 			
 			panel.add(text2);
 			text2.setFont(new Font("Arial", Font.PLAIN, 34));
-			text2.setBounds(cenElement(970), 72, 970, 36);
+			text2.setBounds(cenElement(970), 90, 970, 36);
 			
 			panel.add(text3);
 			text3.setFont(new Font("Arial", Font.PLAIN, 34));
-			text3.setBounds(cenElement(880), 104, 880, 36);
+			text3.setBounds(cenElement(880), 122, 880, 36);
 			
 			panel.add(text4);
 			text4.setFont(new Font("Arial", Font.PLAIN, 34));
-			text4.setBounds(cenElement(950), 136, 950, 36);
+			text4.setBounds(cenElement(950), 154, 950, 36);
 			
 			panel.add(text5);
 			text5.setFont(new Font("Arial", Font.PLAIN, 34));
-			text5.setBounds(cenElement(550), 168, 550, 36);
+			text5.setBounds(cenElement(550), 186, 550, 36);
 			
 			panel.add(continueNext);
 			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
 			continueNext.setBounds(cenElement(220), 320, 220, 46);
 			continueNext.addActionListener(inst);
 			continueNext.setActionCommand("beginContinue1");
+			
+			panel.add(backWelcome);
+			backWelcome.setFont(new Font("Arial", Font.PLAIN, 38));
+			backWelcome.setBounds(10, 10, 42, 42);
+			backWelcome.addActionListener(inst);
+			backWelcome.setActionCommand("backWelcome");
+			backWelcome.setMargin(new Insets(0, 0, 0, 0));
 		}
 		
 		@Override
@@ -177,6 +188,7 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(text4);
 			panel.remove(text5);
 			panel.remove(continueNext);
+			panel.remove(backWelcome);
 		}
 	}
 	
