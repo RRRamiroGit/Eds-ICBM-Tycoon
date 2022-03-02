@@ -1,3 +1,8 @@
+/*
+ * Ramiro Salazar
+ * Period 1 APCS
+*/
+
 package net.randompvp.icbm;
 
 import java.awt.BorderLayout;
@@ -19,9 +24,12 @@ import javax.swing.JPanel;
 
 public class ICBMTycoon implements ActionListener {
 	
-	public static ICBMTycoon inst;
+	public static ICBMTycoon inst; // Instance of the class
+	
+	// Window dimensions
 	int windowHeight = 576;
 	int windowWidth = 1024;
+	
 	JFrame frame;
 	JPanel panel;
 	Page screen;
@@ -33,11 +41,11 @@ public class ICBMTycoon implements ActionListener {
 		panel.setLayout(null);
 		frame.add(panel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		frame.setMinimumSize(new Dimension(windowWidth, windowHeight));
-		frame.setTitle("Ed's ICBM Tycoon");
+		frame.setResizable(false); // Prevent the window from being resized
+		frame.setMinimumSize(new Dimension(windowWidth, windowHeight)); // Set the dimensions of the window
+		frame.setTitle("Ed's ICBM Tycoon"); // Set the title of the window
         frame.pack();
-        changeScreen(new Welcome());
+        changeScreen(new Welcome()); // Make the welcome screen appear
 	}
 	
 
@@ -46,14 +54,14 @@ public class ICBMTycoon implements ActionListener {
 		if (e.getActionCommand().equals("startGame")) {
 			
 		} else if (e.getActionCommand().equals("exitGame")) {
-			System.exit(0);
+			System.exit(0); // Exit the program
 		}
 	}
 	
 	void changeScreen(Page newScreen) {
-		if (screen != null)
+		if (screen != null) // If there is a screen then remove it first
 			screen.remove();
-		screen = newScreen;
+		screen = newScreen; // Set screen variable
 		frame.setVisible(true);
 	}
 
@@ -61,7 +69,7 @@ public class ICBMTycoon implements ActionListener {
 		new ICBMTycoon();
 	}
 	
-	abstract class Page {
+	abstract class Page { // Class to be extended to for each class page of the game
 		abstract public void remove();
 	}
 	
