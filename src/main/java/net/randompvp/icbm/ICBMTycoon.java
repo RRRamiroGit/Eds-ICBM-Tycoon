@@ -12,9 +12,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -134,8 +132,8 @@ public class ICBMTycoon implements ActionListener {
 		
 		JLabel initializeImage() {
 			try {
-				return new JLabel(new ImageIcon(ImageIO.read(new File(getClass().getResource("/icbm.jpg").toURI()))));
-			} catch (IOException | URISyntaxException e) {
+				return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/icbm.jpg"))));
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return null;
