@@ -52,11 +52,12 @@ public class ICBMTycoon implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("startGame")) {
+		String com = e.getActionCommand();
+		if (com.equals("startGame")) {
 			changeScreen(new Begin1());
-		} else if (e.getActionCommand().equals("exitGame")) {
+		} else if (com.equals("exitGame")) {
 			System.exit(0); // Exit the program
-		} else if (e.getActionCommand().equals("backWelcome")) {
+		} else if (com.equals("backWelcome")) {
 			changeScreen(new Welcome());
 		}
 	}
