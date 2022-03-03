@@ -110,14 +110,16 @@ public class ICBMTycoon implements ActionListener {
 	}
 	
 	class Capital {
-		int x;
-		int y;
-		int population;
+		final int x;
+		final int y;
+		final int population;
+		final String name;
 		
-		public Capital(int x, int y, int population) {
+		public Capital(int x, int y, int population, String name) {
 			this.x = x;
 			this.y = y;
 			this.population = population;
+			this.name = name;
 		}
 		
 		public int getX() {
@@ -130,6 +132,10 @@ public class ICBMTycoon implements ActionListener {
 		
 		public int getPopulation() {
 			return this.population;
+		}
+		
+		public String getName() {
+			return this.name;
 		}
 	}
 	
