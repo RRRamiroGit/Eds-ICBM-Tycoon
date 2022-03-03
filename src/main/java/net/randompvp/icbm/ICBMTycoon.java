@@ -87,9 +87,18 @@ public class ICBMTycoon implements ActionListener {
 		return (windowWidth - width) / 2;
 	}
 	
-	JLabel initializeImage(String imageName) {
+	JLabel initializeImageLabel(String imageName, boolean isPNG) {
 		try {
-			return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + ".jpg"))));
+			return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + "." + (isPNG ? "png" : "jpg")))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	JButton initializeImageButton(String imageName, boolean isPNG) {
+		try {
+			return new JButton(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + "." + (isPNG ? "png" : "jpg")))));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -111,7 +120,7 @@ public class ICBMTycoon implements ActionListener {
 		JLabel welcome = new JLabel("Welcome to Ed's ICBM Tycoon! Press the Start button to continue");
 		JLabel author = new JLabel("Developed by Ramiro");
 		JLabel author2 = new JLabel("Concept by Ed");
-		JLabel icbmImage = initializeImage("icbm");
+		JLabel icbmImage = initializeImageLabel("icbm", false);
 		
 		public Welcome() {
 			int buttonWidth = 140;
@@ -334,8 +343,8 @@ public class ICBMTycoon implements ActionListener {
 	}
 	
 	class GameMap extends Page {
-		JLabel usMap = initializeImage("map");
-		JLabel side = initializeImage("side");
+		JLabel usMap = initializeImageLabel("map", false);
+		JLabel side = initializeImageLabel("side", false);
 		
 		public GameMap() {
 			panel.add(usMap);
@@ -348,6 +357,7 @@ public class ICBMTycoon implements ActionListener {
 		@Override
 		public void remove() {
 			panel.remove(usMap);
+			panel.remove(side);
 		}
 		
 	}
