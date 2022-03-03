@@ -5,7 +5,6 @@
 
 package net.randompvp.icbm;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -40,10 +39,11 @@ public class ICBMTycoon implements ActionListener {
 		frame = new JFrame();
 		panel = new JPanel();
 		panel.setLayout(null);
-		frame.add(panel, BorderLayout.CENTER);
+		panel.setBackground(Color.GRAY);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false); // Prevent the window from being resized
-		frame.setMinimumSize(new Dimension(windowWidth, windowHeight)); // Set the dimensions of the window
+		panel.setPreferredSize(new Dimension(windowWidth, windowHeight)); // Set the dimensions of the window
+		frame.getContentPane().add(panel);
 		frame.setTitle("Ed's ICBM Tycoon"); // Set the title of the window
 		frame.setVisible(true);
         frame.pack();
@@ -87,6 +87,15 @@ public class ICBMTycoon implements ActionListener {
 		return (windowWidth - width) / 2;
 	}
 	
+	JLabel initializeImage(String imageName) {
+		try {
+			return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + ".jpg"))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		new ICBMTycoon();
 	}
@@ -102,7 +111,7 @@ public class ICBMTycoon implements ActionListener {
 		JLabel welcome = new JLabel("Welcome to Ed's ICBM Tycoon! Press the Start button to continue");
 		JLabel author = new JLabel("Developed by Ramiro");
 		JLabel author2 = new JLabel("Concept by Ed");
-		JLabel icbmImage = initializeImage();
+		JLabel icbmImage = initializeImage("icbm");
 		
 		public Welcome() {
 			int buttonWidth = 140;
@@ -140,15 +149,6 @@ public class ICBMTycoon implements ActionListener {
 			icbmImage.add(author2);
 			author2.setBounds(cenElement(80), 102, 80, 14);
 			author2.setForeground(Color.WHITE);
-		}
-		
-		JLabel initializeImage() {
-			try {
-				return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/icbm.jpg"))));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
 		}
 		
 		@Override
@@ -334,20 +334,15 @@ public class ICBMTycoon implements ActionListener {
 	}
 	
 	class GameMap extends Page {
-		JLabel usMap = initializeImage();
+		JLabel usMap = initializeImage("map");
+		JLabel side = initializeImage("side");
 		
 		public GameMap() {
 			panel.add(usMap);
-			usMap.setBounds(0, 0, 867, 549);
-		}
-		
-		JLabel initializeImage() {
-			try {
-				return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/map.jpg"))));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
+			usMap.setBounds(0, 0, 868, windowHeight);
+			
+			panel.add(side);
+			side.setBounds(868, 0, 191, 681);
 		}
 		
 		@Override
