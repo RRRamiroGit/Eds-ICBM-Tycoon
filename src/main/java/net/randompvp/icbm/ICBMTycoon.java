@@ -109,6 +109,30 @@ public class ICBMTycoon implements ActionListener {
 		new ICBMTycoon();
 	}
 	
+	class Capital {
+		int x;
+		int y;
+		int population;
+		
+		public Capital(int x, int y, int population) {
+			this.x = x;
+			this.y = y;
+			this.population = population;
+		}
+		
+		public int getX() {
+			return this.x;
+		}
+		
+		public int getY() {
+			return this.y;
+		}
+		
+		public int getPopulation() {
+			return this.population;
+		}
+	}
+	
 	abstract class Page { // Class to be extended to for each class page of the game
 		abstract public void remove();
 	}
