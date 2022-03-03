@@ -33,6 +33,7 @@ public class ICBMTycoon implements ActionListener {
 	JFrame frame;
 	JPanel panel;
 	Page screen;
+	String name;
 	
 	public ICBMTycoon() {
 		inst = this;
@@ -69,7 +70,8 @@ public class ICBMTycoon implements ActionListener {
 			if (nameCl.getName().equals("")) {
 				nameCl.emptyName();
 			} else {
-				
+				name = nameCl.getName();
+				changeScreen(new GameMap());
 			}
 		}
 	}
@@ -329,6 +331,30 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(emptyName);
 			panel.remove(continueNext);
 		}
+	}
+	
+	class GameMap extends Page {
+		JLabel usMap = initializeImage();
+		
+		public GameMap() {
+			panel.add(usMap);
+			usMap.setBounds(0, 0, 867, 549);
+		}
+		
+		JLabel initializeImage() {
+			try {
+				return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/map.jpg"))));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		@Override
+		public void remove() {
+			panel.remove(usMap);
+		}
+		
 	}
 	
 }
