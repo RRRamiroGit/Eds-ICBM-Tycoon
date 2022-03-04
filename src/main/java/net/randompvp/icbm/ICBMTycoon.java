@@ -12,6 +12,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -33,6 +37,8 @@ public class ICBMTycoon implements ActionListener {
 	JPanel panel;
 	Page screen;
 	String name;
+	final Capital[] capitals = { new Capital(107, 118, 7705917, "Olympia"), new Capital(91, 155, 4253588, "Salem"), new Capital(77, 272, 39562858, "Sacramento"), new Capital(116, 268, 3132071, "Carson City"), new Capital(193, 193, 1823594, "Boise"), new Capital(258, 132, 1076891, "Helena"), new Capital(323, 214, 579917, "Cheyenne"), new Capital(225, 250, 3258366, "Salt Lake City"), new Capital(216, 383, 7399410, "Phoenix"), new Capital(338, 256, 5826185, "Denver"), new Capital(295, 346, 2100917, "Santa Fe"), new Capital(432, 454, 29363096, "Austin"), new Capital(426, 334, 3973707, "Oklahoma City"), new Capital(448, 270, 2915269, "Topeka"), new Capital(436, 241, 1943202, "Lincoln"), new Capital(404, 178, 890620, "Pierre"), new Capital(401, 127, 766044, "Bismarck"), new Capital(487, 169, 5673015, "St. Paul"), new Capital(502, 223, 3161522, "Des Moines"), new Capital(508, 280, 6153233, "Jefferson City"), new Capital(510, 353, 3025875, "Little Rock"), new Capital(519, 445, 4637898, "Baton Rouge"), new Capital(539, 417, 2971278, "Jackson"), new Capital(601, 331, 6886717, "Nashville"), new Capital(620, 303, 4474193, "Frankfort"), new Capital(557, 269, 12620571, "Springfield"), new Capital(559, 187, 5837462, "Madison"), new Capital(622, 200, 9989642, "Lansing"), new Capital(596, 266, 6768941, "Indianapolis"), new Capital(649, 252, 11701859, "Columbus"), new Capital(664, 289, 1780003, "Charleston"), new Capital(596, 413, 4918689, "Montgomery"), new Capital(631, 446, 21711157, "Tallahassee"), new Capital(638, 384, 10723715, "Atlanta"), new Capital(679, 378, 5213272, "Columbia"), new Capital(721, 334, 10594553, "Raleigh"), new Capital(736, 312, 8569752, "Richmond"), new Capital(736, 277, 6055558, "Annapolis"), new Capital(730, 282, 692683, "Washington D.C."), new Capital(757, 277, 982049, "Dover"), new Capital(715, 243, 12803056, "Harrisburg"), new Capital(756, 198, 19376771, "Albany"), new Capital(766, 254, 8878355, "Trenton"), new Capital(788, 224, 3559054, "Hartford"), new Capital(804, 224, 1060435, "Providence"), new Capital(811, 210, 6902371, "Boston"), new Capital(784, 163, 623620, "Montpelier"), new Capital(797, 188, 1365957, "Concord"), new Capital(826, 162, 1349367, "Augusta") };
+	Capital[] capitalsForGame = new Capital[20];
 	
 	public ICBMTycoon() {
 		inst = this;
@@ -71,6 +77,16 @@ public class ICBMTycoon implements ActionListener {
 				nameCl.emptyName();
 			} else {
 				name = nameCl.getName();
+				
+				// randomize 20 capitals and put them in a new list
+				List<Capital> temp = new ArrayList<Capital>(Arrays.asList(capitals));
+				Random random = new Random();
+				for (int i = 0; i < 20; i++) {
+					int randomNum = random.nextInt(temp.size()); // generate a random number using temporary variable
+					capitalsForGame[i] = temp.get(randomNum);
+					temp.remove(randomNum);
+				}
+				
 				changeScreen(new GameMap());
 			}
 		}
@@ -85,6 +101,10 @@ public class ICBMTycoon implements ActionListener {
 	
 	int cenElement(int width) {
 		return (windowWidth - width) / 2;
+	}
+	
+	public void capitalButton(JButton button, int x, int y) {
+		button.setBounds(x - 3, y - 3, 9, 9);
 	}
 	
 	JLabel initializeImageLabel(String imageName, boolean isPNG) {
@@ -382,6 +402,15 @@ public class ICBMTycoon implements ActionListener {
 			
 			panel.add(side);
 			side.setBounds(868, 0, 191, 681);
+			
+			for (int i = 0; i < capitalsForGame.length; i++) {
+				Capital c = capitalsForGame[i];
+				JButton button = initializeImageButton("dot", true);
+				usMap.add(button);
+				capitalButton(button, c.getX(), c.getY());
+				button.addActionListener(inst);
+				button.setActionCommand("capital:" + i);
+			}
 		}
 		
 		@Override
