@@ -18,12 +18,16 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicBorders;
 
 public class ICBMTycoon implements ActionListener {
 	
@@ -89,6 +93,10 @@ public class ICBMTycoon implements ActionListener {
 				
 				changeScreen(new GameMap());
 			}
+		} else if (com.startsWith("capital:")) {
+			Capital capital = capitalsForGame[Integer.parseInt(com.split(":")[1])];
+			GameMap gm = (GameMap) screen;
+			gm.clickCapital(capital);
 		}
 	}
 	
@@ -395,6 +403,7 @@ public class ICBMTycoon implements ActionListener {
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", false);
 		JLabel side = initializeImageLabel("side", false);
+		JPanel popupICBM;
 		
 		public GameMap() {
 			panel.add(usMap);
@@ -403,6 +412,18 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(side);
 			side.setBounds(868, 0, 191, 681);
 			
+			addCapitals();
+		}
+		
+		public void clickCapital(Capital c) {
+			popupICBM = new JPanel();
+			frame.getContentPane().add(popupICBM);
+			popupICBM.setBounds(64, 36, 896, 504);
+			popupICBM.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+			usMap.removeAll();
+		}
+		
+		void addCapitals() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
 				JButton button = initializeImageButton("dot", true);
