@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,6 +91,8 @@ public class ICBMTycoon implements ActionListener {
 				
 				changeScreen(new GameMap());
 			}
+		} else if (com.equals("exitPopup")) {
+			((GameMap) screen).removeCapitalPopup();
 		} else if (com.startsWith("capital:")) {
 			Capital capital = capitalsForGame[Integer.parseInt(com.split(":")[1])];
 			GameMap gm = (GameMap) screen;
@@ -417,14 +420,34 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(popupICBM);
 			popupICBM.setBounds(64, 36, 896, 504);
 			popupICBM.setLayout(null);
-			popupICBM.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+			popupICBM.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+			
+			JButton exitPopup = new JButton("X");
+			popupICBM.add(exitPopup);
+			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
+			exitPopup.setBackground(Color.RED);
+			exitPopup.setBounds(832, 30, 34, 34);
+			exitPopup.setMargin(new Insets(0, 0, 0, 0));
+			exitPopup.addActionListener(inst);
+			exitPopup.setActionCommand("exitPopup");
 			
 			JLabel title = new JLabel("You will ICBM " + c.getName());
 			popupICBM.add(title);
-			title.setFont(new Font("Arial", Font.PLAIN, 32));
-			title.setBounds(50, 50, 260, 50);
+			title.setFont(new Font("Arial", Font.PLAIN, 28));
+			title.setBounds(30, 30, 500, 34);
+			
+			JLabel population = new JLabel("Population: " + NumberFormat.getInstance().format(c.getPopulation()));
+			popupICBM.add(population);
+			population.setFont(new Font("Arial", Font.PLAIN, 18));
+			population.setBounds(30, 64, 500, 20);
 			
 			usMap.removeAll();
+		}
+		
+		public void removeCapitalPopup() {
+			panel.remove(popupICBM);
+			addCapitals();
+			frame.repaint();
 		}
 		
 		void addCapitals() {
