@@ -21,13 +21,10 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicBorders;
 
 public class ICBMTycoon implements ActionListener {
 	
@@ -417,9 +414,16 @@ public class ICBMTycoon implements ActionListener {
 		
 		public void clickCapital(Capital c) {
 			popupICBM = new JPanel();
-			frame.getContentPane().add(popupICBM);
+			panel.add(popupICBM);
 			popupICBM.setBounds(64, 36, 896, 504);
+			popupICBM.setLayout(null);
 			popupICBM.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+			
+			JLabel title = new JLabel("You will ICBM " + c.getName());
+			popupICBM.add(title);
+			title.setFont(new Font("Arial", Font.PLAIN, 32));
+			title.setBounds(50, 50, 260, 50);
+			
 			usMap.removeAll();
 		}
 		
