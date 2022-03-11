@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class ICBMTycoon implements ActionListener {
 	
@@ -405,15 +406,34 @@ public class ICBMTycoon implements ActionListener {
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", true);
 		JPanel popupICBM;
+		Component[] capitalElements = new Component[20];
+		JLabel moneyText = new JLabel(NumberFormat.getInstance().format(money) + "K");
+		JButton clickMoney = new JButton();
 		
 		public GameMap() {
 			panel.add(usMap);
 			usMap.setBounds(0, 0, windowWidth, windowHeight);
 			
+			usMap.add(moneyText);
+			moneyText.setFont(new Font("Arial", Font.PLAIN, 36));
+			moneyText.setBounds(610, 2, 160, 38);
+			moneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+			moneyText.setForeground(Color.GREEN);
+			
+			usMap.add(clickMoney);
+			clickMoney.setBounds(580, 1, 196, 36);
+			clickMoney.setOpaque(false);
+			clickMoney.setContentAreaFilled(false);
+			clickMoney.setBorderPainted(false);
+			clickMoney.addActionListener(inst);
+			clickMoney.setActionCommand("clickMoney");
+			
 			addCapitals();
 		}
 		
 		public void clickCapital(Capital c) {
+			removeClickElements();
+			
 			popupICBM = new JPanel();
 			panel.add(popupICBM);
 			popupICBM.setBounds(64, 36, 896, 504);
@@ -438,8 +458,6 @@ public class ICBMTycoon implements ActionListener {
 			popupICBM.add(population);
 			population.setFont(new Font("Arial", Font.PLAIN, 18));
 			population.setBounds(30, 64, 500, 20);
-			
-			usMap.removeAll();
 		}
 		
 		public void removeCapitalPopup() {
@@ -448,14 +466,33 @@ public class ICBMTycoon implements ActionListener {
 			frame.repaint();
 		}
 		
+		public void clickMoney() {
+			
+		}
+		
 		void addCapitals() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
-				JButton button = initializeImageButton("dot", true);
-				usMap.add(button);
-				capitalPosition(button, c.getX(), c.getY());
-				button.addActionListener(inst);
-				button.setActionCommand("capital:" + i);
+				capitalElements[i] = initializeImageButton("dot", true);
+				usMap.add(capitalElements[i]);
+				capitalPosition(capitalElements[i], c.getX(), c.getY());
+				((JButton) capitalElements[i]).addActionListener(inst);
+				((JButton) capitalElements[i]).setActionCommand("capital:" + i);
+			}
+		}
+		
+		void addCapitalsAsLabels() {
+			for (int i = 0; i < capitalsForGame.length; i++) {
+				Capital c = capitalsForGame[i];
+				capitalElements[i] = initializeImageLabel("dot", true);
+				usMap.add(capitalElements[i]);
+				capitalPosition(capitalElements[i], c.getX(), c.getY());
+			}
+		}
+		
+		void removeClickElements() {
+			for (Component capital : capitalElements) {
+				usMap.remove(capital);
 			}
 		}
 		
