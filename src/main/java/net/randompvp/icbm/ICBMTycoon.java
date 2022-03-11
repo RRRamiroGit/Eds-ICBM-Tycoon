@@ -401,16 +401,12 @@ public class ICBMTycoon implements ActionListener {
 	}
 	
 	class GameMap extends Page {
-		JLabel usMap = initializeImageLabel("map", false);
-		JLabel side = initializeImageLabel("side", false);
+		JLabel usMap = initializeImageLabel("map", true);
 		JPanel popupICBM;
 		
 		public GameMap() {
 			panel.add(usMap);
-			usMap.setBounds(0, 0, 868, windowHeight);
-			
-			panel.add(side);
-			side.setBounds(868, 0, 191, 681);
+			usMap.setBounds(0, 0, windowWidth, windowHeight);
 			
 			addCapitals();
 		}
@@ -455,7 +451,7 @@ public class ICBMTycoon implements ActionListener {
 				Capital c = capitalsForGame[i];
 				JButton button = initializeImageButton("dot", true);
 				usMap.add(button);
-				capitalButton(button, c.getX(), c.getY());
+				capitalButton(button, c.getX() + 110, c.getY() + 2);
 				button.addActionListener(inst);
 				button.setActionCommand("capital:" + i);
 			}
@@ -464,7 +460,6 @@ public class ICBMTycoon implements ActionListener {
 		@Override
 		public void remove() {
 			panel.remove(usMap);
-			panel.remove(side);
 		}
 		
 	}
