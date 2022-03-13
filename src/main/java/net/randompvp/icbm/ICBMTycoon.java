@@ -478,7 +478,7 @@ public class ICBMTycoon implements ActionListener {
 			popup = new JPanel();
 			panel.add(popup);
 			panel.setComponentZOrder(popup, 0);
-			popup.setBounds(297, 198, 430, 180);
+			popup.setBounds(297, 228, 430, 120);
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
 			
@@ -490,6 +490,16 @@ public class ICBMTycoon implements ActionListener {
 			exitPopup.setMargin(new Insets(0, 0, 0, 0));
 			exitPopup.addActionListener(inst);
 			exitPopup.setActionCommand("exitPopup");
+			
+			JLabel title = new JLabel("Money owned:");
+			popup.add(title);
+			title.setFont(new Font("Arial", Font.PLAIN, 28));
+			title.setBounds(30, 30, 500, 34);
+			
+			JLabel money = new JLabel("$" + moneyText.getText());
+			popup.add(money);
+			money.setFont(new Font("Arial", Font.PLAIN, 18));
+			money.setBounds(30, 64, 500, 20);
 		}
 		
 		void addCapitals() {
