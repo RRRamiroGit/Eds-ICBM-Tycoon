@@ -422,15 +422,14 @@ public class ICBMTycoon implements ActionListener {
 			moneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 			moneyText.setForeground(Color.GREEN);
 			
-			usMap.add(clickMoney);
+			addClickElements();
+			
 			clickMoney.setBounds(580, 1, 196, 36);
 			clickMoney.setOpaque(false);
 			clickMoney.setContentAreaFilled(false);
 			clickMoney.setBorderPainted(false);
 			clickMoney.addActionListener(inst);
 			clickMoney.setActionCommand("clickMoney");
-			
-			addCapitals();
 		}
 		
 		public void clickCapital(Capital c) {
@@ -467,7 +466,7 @@ public class ICBMTycoon implements ActionListener {
 		public void removePopup() {
 			panel.remove(popup);
 			removeClickElements();
-			addCapitals();
+			addClickElements();
 			frame.repaint();
 		}
 		
@@ -502,7 +501,7 @@ public class ICBMTycoon implements ActionListener {
 			money.setBounds(30, 64, 500, 20);
 		}
 		
-		void addCapitals() {
+		void addClickElements() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
 				capitalElements[i] = initializeImageButton("dot", true);
@@ -511,6 +510,7 @@ public class ICBMTycoon implements ActionListener {
 				((JButton) capitalElements[i]).addActionListener(inst);
 				((JButton) capitalElements[i]).setActionCommand("capital:" + i);
 			}
+			usMap.add(clickMoney);
 		}
 		
 		void addCapitalsAsLabels() {
@@ -526,6 +526,7 @@ public class ICBMTycoon implements ActionListener {
 			for (Component capital : capitalElements) {
 				usMap.remove(capital);
 			}
+			usMap.remove(clickMoney);
 		}
 		
 		@Override
