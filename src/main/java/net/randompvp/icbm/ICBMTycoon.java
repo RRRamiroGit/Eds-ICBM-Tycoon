@@ -120,6 +120,14 @@ public class ICBMTycoon implements ActionListener {
 		component.setBounds(x - 3, y - 3, 9, 9);
 	}
 	
+	int calcStrike(double population, int basePercent) {
+		return (int) (basePercent - ((population / 140000) - 4.4));
+	}
+	
+	int percentOfPop(int percentage, double population) {
+		return (int) ((population / 100) * percentage);
+	}
+	
 	JLabel initializeImageLabel(String imageName, boolean isPNG) {
 		try {
 			return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + "." + (isPNG ? "png" : "jpg")))));
@@ -461,6 +469,60 @@ public class ICBMTycoon implements ActionListener {
 			popup.add(population);
 			population.setFont(new Font("Arial", Font.PLAIN, 18));
 			population.setBounds(30, 64, 500, 20);
+			
+			JLabel icbmLayout = initializeImageLabel("icbmlayout", true);
+			popup.add(icbmLayout);
+			icbmLayout.setBounds(11, 123, 874, 370);
+			
+			JLabel IRBMStrike = new JLabel(calcStrike(c.getPopulation(), 70) + "%");
+			icbmLayout.add(IRBMStrike);
+			IRBMStrike.setBounds(15, 192, 50, 20);
+			JLabel IRBMPop = new JLabel("25-30%");
+			icbmLayout.add(IRBMPop);
+			IRBMPop.setBounds(15, 228, 160, 20);
+			JLabel IRBMPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(25, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(30, c.getPopulation())) + ")");
+			icbmLayout.add(IRBMPopNums);
+			IRBMPopNums.setBounds(15, 242, 160, 20);
+			
+			JLabel SICBMStrike = new JLabel(calcStrike(c.getPopulation(), 65) + "%");
+			icbmLayout.add(SICBMStrike);
+			SICBMStrike.setBounds(192, 192, 50, 20);
+			JLabel SICBMPop = new JLabel("40-50%");
+			icbmLayout.add(SICBMPop);
+			SICBMPop.setBounds(192, 228, 160, 20);
+			JLabel SICBMPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(40, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(50, c.getPopulation())) + ")");
+			icbmLayout.add(SICBMPopNums);
+			SICBMPopNums.setBounds(192, 242, 160, 20);
+			
+			JLabel TridentStrike = new JLabel(calcStrike(c.getPopulation(), 95) + "%");
+			icbmLayout.add(TridentStrike);
+			TridentStrike.setBounds(369, 192, 50, 20);
+			JLabel TridentPop = new JLabel("35-40%");
+			icbmLayout.add(TridentPop);
+			TridentPop.setBounds(369, 228, 160, 20);
+			JLabel TridentPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(35, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(40, c.getPopulation())) + ")");
+			icbmLayout.add(TridentPopNums);
+			TridentPopNums.setBounds(369, 242, 160, 20);
+			
+			JLabel SarmatStrike = new JLabel(calcStrike(c.getPopulation(), 70) + "%");
+			icbmLayout.add(SarmatStrike);
+			SarmatStrike.setBounds(546, 192, 50, 20);
+			JLabel SarmatPop = new JLabel("55-70%");
+			icbmLayout.add(SarmatPop);
+			SarmatPop.setBounds(546, 228, 160, 20);
+			JLabel SarmatPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(55, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(70, c.getPopulation())) + ")");
+			icbmLayout.add(SarmatPopNums);
+			SarmatPopNums.setBounds(546, 242, 160, 20);
+			
+			JLabel TSARStrike = new JLabel(calcStrike(c.getPopulation(), 55) + "%");
+			icbmLayout.add(TSARStrike);
+			TSARStrike.setBounds(723, 192, 50, 20);
+			JLabel TSARPop = new JLabel("70-95%");
+			icbmLayout.add(TSARPop);
+			TSARPop.setBounds(723, 228, 160, 20);
+			JLabel TSARPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(70, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(95, c.getPopulation())) + ")");
+			icbmLayout.add(TSARPopNums);
+			TSARPopNums.setBounds(723, 242, 160, 20);
 		}
 		
 		public void removePopup() {
