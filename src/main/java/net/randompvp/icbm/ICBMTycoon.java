@@ -95,11 +95,13 @@ public class ICBMTycoon implements ActionListener {
 				changeScreen(new GameMap());
 			}
 		} else if (com.equals("exitPopup")) {
-			((GameMap) screen).removeCapitalPopup();
+			((GameMap) screen).removePopup();
 		} else if (com.startsWith("capital:")) {
 			Capital capital = capitalsForGame[Integer.parseInt(com.split(":")[1])];
 			GameMap gm = (GameMap) screen;
 			gm.clickCapital(capital);
+		} else if (com.equals("clickMoney")) {
+			((GameMap) screen).clickMoney();
 		}
 	}
 	
@@ -405,7 +407,7 @@ public class ICBMTycoon implements ActionListener {
 	
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", true);
-		JPanel popupICBM;
+		JPanel popup;
 		Component[] capitalElements = new Component[20];
 		JLabel moneyText = new JLabel(NumberFormat.getInstance().format(money) + "K");
 		JButton clickMoney = new JButton();
@@ -433,15 +435,17 @@ public class ICBMTycoon implements ActionListener {
 		
 		public void clickCapital(Capital c) {
 			removeClickElements();
+			addCapitalsAsLabels();
 			
-			popupICBM = new JPanel();
-			panel.add(popupICBM);
-			popupICBM.setBounds(64, 36, 896, 504);
-			popupICBM.setLayout(null);
-			popupICBM.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+			popup = new JPanel();
+			panel.add(popup);
+			panel.setComponentZOrder(popup, 0);
+			popup.setBounds(64, 36, 896, 504);
+			popup.setLayout(null);
+			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
 			
 			JButton exitPopup = new JButton("X");
-			popupICBM.add(exitPopup);
+			popup.add(exitPopup);
 			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
 			exitPopup.setBackground(Color.RED);
 			exitPopup.setBounds(832, 30, 34, 34);
@@ -450,24 +454,42 @@ public class ICBMTycoon implements ActionListener {
 			exitPopup.setActionCommand("exitPopup");
 			
 			JLabel title = new JLabel("You will ICBM " + c.getName());
-			popupICBM.add(title);
+			popup.add(title);
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
 			
 			JLabel population = new JLabel("Population: " + NumberFormat.getInstance().format(c.getPopulation()));
-			popupICBM.add(population);
+			popup.add(population);
 			population.setFont(new Font("Arial", Font.PLAIN, 18));
 			population.setBounds(30, 64, 500, 20);
 		}
 		
-		public void removeCapitalPopup() {
-			panel.remove(popupICBM);
+		public void removePopup() {
+			panel.remove(popup);
+			removeClickElements();
 			addCapitals();
 			frame.repaint();
 		}
 		
 		public void clickMoney() {
+			removeClickElements();
+			addCapitalsAsLabels();
 			
+			popup = new JPanel();
+			panel.add(popup);
+			panel.setComponentZOrder(popup, 0);
+			popup.setBounds(297, 198, 430, 180);
+			popup.setLayout(null);
+			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+			
+			JButton exitPopup = new JButton("X");
+			popup.add(exitPopup);
+			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
+			exitPopup.setBackground(Color.RED);
+			exitPopup.setBounds(366, 30, 34, 34);
+			exitPopup.setMargin(new Insets(0, 0, 0, 0));
+			exitPopup.addActionListener(inst);
+			exitPopup.setActionCommand("exitPopup");
 		}
 		
 		void addCapitals() {
