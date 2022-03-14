@@ -240,10 +240,11 @@ public class ICBMTycoon implements ActionListener {
 	class Credits extends Page {
 		JButton backWelcome = new JButton("<");
 		JLabel text1 = new JLabel("Ed's ICBM Tycoon");
-		JLabel text2 = new JLabel("© 2022 Ramiro Salazar");
+		JLabel text2 = new JLabel("Â© 2022 Ramiro Salazar");
 		JLabel text3 = new JLabel("Developed by Ramiro Salazar");
 		JLabel text4 = new JLabel("Ideas by Ed Ruiz");
 		JLabel text5 = new JLabel("Welcome page image from Rodong Sinmun");
+		JLabel text6 = new JLabel("Capital population numbers from WikipediaÂ®");
 		
 		public Credits() {
 			panel.add(backWelcome);
@@ -272,6 +273,10 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(text5);
 			text5.setFont(new Font("Arial", Font.PLAIN, 18));
 			text5.setBounds(10, 138, 600, 20);
+			
+			panel.add(text6);
+			text6.setFont(new Font("Arial", Font.PLAIN, 18));
+			text6.setBounds(10, 158, 600, 20);
 		}
 		
 		@Override
@@ -282,12 +287,13 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(text3);
 			panel.remove(text4);
 			panel.remove(text5);
+			panel.remove(text6);
 		}
 	}
 	
 	class Begin1 extends Page {
 		JLabel text1 = new JLabel("You have been ordered by a Russian government official named");
-		JLabel text2 = new JLabel("Ed HHahdhcuud to send ICBM’s to the United States as while the");
+		JLabel text2 = new JLabel("Ed HHahdhcuud to send ICBM's to the United States as while the");
 		JLabel text3 = new JLabel("United States were transporting a nuclear warhead closer to");
 		JLabel text4 = new JLabel("Russian borders, they dropped the warhead by accident, causing");
 		JLabel text5 = new JLabel("hundreds of thousands of causalities.");
