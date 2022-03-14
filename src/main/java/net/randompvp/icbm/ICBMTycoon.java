@@ -670,7 +670,7 @@ public class ICBMTycoon implements ActionListener {
 							int chance = calcStrike(capitalSelected.getPopulation(), icbm.percentageStrike);
 							chance = chance + (icbmClicks / 16);
 							if (new Random().nextInt(100) < chance) { // ICBM hit
-								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationLow() + (new Random().nextDouble() * (icbm.getPopulationHigh() - ((icbm.getPopulationHigh() - icbm.getPopulationLow()) / 100 * icbmClicks)))));
+								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationHigh() - (new Random().nextDouble() * (icbm.getPopulationHigh() - icbm.getPopulationLow() - (((double) icbm.getPopulationHigh() - (double) icbm.getPopulationLow()) / 100 * icbmClicks)))));
 								JLabel hit = new JLabel("Congrats! Your " + icbm.getName() + " hit " + capitalSelected.getName() + " and killed " + NumberFormat.getInstance().format(people) + " people!");
 								popup.add(hit);
 								hit.setBounds(0, 230, 896, 28);
@@ -685,6 +685,7 @@ public class ICBMTycoon implements ActionListener {
 								intercepted.setForeground(Color.RED);
 								intercepted.setFont(new Font("Arial", Font.PLAIN, 24));
 							}
+							icbmClicks = 0;
 							new Timer().schedule(new TimerTask() {
 								public void run() {
 									removePopup();
