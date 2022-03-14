@@ -415,10 +415,14 @@ public class ICBMTycoon implements ActionListener {
 	
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", true);
-		JPanel popup;
 		Component[] capitalElements = new Component[20];
 		JLabel moneyText = new JLabel(NumberFormat.getInstance().format(money) + "K");
 		JButton clickMoney = new JButton();
+		
+		// popup
+		JPanel popup;
+		JButton exitPopup = new JButton("X");
+		
 		
 		public GameMap() {
 			panel.add(usMap);
@@ -438,6 +442,12 @@ public class ICBMTycoon implements ActionListener {
 			clickMoney.setBorderPainted(false);
 			clickMoney.addActionListener(inst);
 			clickMoney.setActionCommand("clickMoney");
+			
+			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
+			exitPopup.setBackground(Color.RED);
+			exitPopup.setMargin(new Insets(0, 0, 0, 0));
+			exitPopup.addActionListener(inst);
+			exitPopup.setActionCommand("exitPopup");
 		}
 		
 		public void clickCapital(Capital c) {
@@ -451,14 +461,8 @@ public class ICBMTycoon implements ActionListener {
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
 			
-			JButton exitPopup = new JButton("X");
 			popup.add(exitPopup);
-			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
-			exitPopup.setBackground(Color.RED);
 			exitPopup.setBounds(832, 30, 34, 34);
-			exitPopup.setMargin(new Insets(0, 0, 0, 0));
-			exitPopup.addActionListener(inst);
-			exitPopup.setActionCommand("exitPopup");
 			
 			JLabel title = new JLabel("You will ICBM " + c.getName());
 			popup.add(title);
@@ -483,6 +487,12 @@ public class ICBMTycoon implements ActionListener {
 			JLabel IRBMPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(25, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(30, c.getPopulation())) + ")");
 			icbmLayout.add(IRBMPopNums);
 			IRBMPopNums.setBounds(15, 242, 160, 20);
+			JButton IRBMButton = new JButton("Strike!");
+			icbmLayout.add(IRBMButton);
+			IRBMButton.setFont(new Font("Arial", Font.PLAIN, 28));
+			IRBMButton.setBounds(15, 325, 136, 30);
+			IRBMButton.addActionListener(inst);
+			IRBMButton.setActionCommand("strike:irbm");
 			
 			JLabel SICBMStrike = new JLabel(calcStrike(c.getPopulation(), 65) + "%");
 			icbmLayout.add(SICBMStrike);
@@ -513,6 +523,18 @@ public class ICBMTycoon implements ActionListener {
 			JLabel SarmatPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(55, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(70, c.getPopulation())) + ")");
 			icbmLayout.add(SarmatPopNums);
 			SarmatPopNums.setBounds(546, 242, 160, 20);
+			JButton tridentButton = new JButton("Strike!");
+			icbmLayout.add(tridentButton);
+			tridentButton.setFont(new Font("Arial", Font.PLAIN, 28));
+			tridentButton.setBounds(369, 325, 136, 30);
+			tridentButton.addActionListener(inst);
+			tridentButton.setActionCommand("strike:trident");
+			JButton sarmatButton = new JButton("Strike!");
+			icbmLayout.add(sarmatButton);
+			sarmatButton.setFont(new Font("Arial", Font.PLAIN, 28));
+			sarmatButton.setBounds(546, 325, 136, 30);
+			sarmatButton.addActionListener(inst);
+			sarmatButton.setActionCommand("strike:sarmat");
 			
 			JLabel TSARStrike = new JLabel(calcStrike(c.getPopulation(), 55) + "%");
 			icbmLayout.add(TSARStrike);
@@ -523,6 +545,12 @@ public class ICBMTycoon implements ActionListener {
 			JLabel TSARPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(70, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(95, c.getPopulation())) + ")");
 			icbmLayout.add(TSARPopNums);
 			TSARPopNums.setBounds(723, 242, 160, 20);
+			JButton TSARButton = new JButton("Strike!");
+			icbmLayout.add(TSARButton);
+			TSARButton.setFont(new Font("Arial", Font.PLAIN, 28));
+			TSARButton.setBounds(723, 325, 136, 30);
+			TSARButton.addActionListener(inst);
+			TSARButton.setActionCommand("strike:tsar");
 		}
 		
 		public void removePopup() {
@@ -545,12 +573,7 @@ public class ICBMTycoon implements ActionListener {
 			
 			JButton exitPopup = new JButton("X");
 			popup.add(exitPopup);
-			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
-			exitPopup.setBackground(Color.RED);
 			exitPopup.setBounds(366, 30, 34, 34);
-			exitPopup.setMargin(new Insets(0, 0, 0, 0));
-			exitPopup.addActionListener(inst);
-			exitPopup.setActionCommand("exitPopup");
 			
 			JLabel title = new JLabel("Money owned:");
 			popup.add(title);
