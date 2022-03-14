@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,6 +49,8 @@ public class ICBMTycoon implements ActionListener {
 	Capital[] capitalsForGame = new Capital[20];
 	final ICBM[] icbms = { new ICBM(500, 70, 25, 30, "IRBM"), new ICBM(750, 65, 40, 50, "Standard ICBM"), new ICBM(900, 95, 35, 40, "Trident II"), new ICBM(1000, 70, 55, 70, "Sarmat"), new ICBM(1250, 55, 70, 95, "TSAR ICBM") };
 	HashMap<Integer, Integer> ownedICBM = new HashMap<Integer, Integer>();
+	int killed = 0;
+	int alive = 0;
 	int money = 5000; // starting
 	
 	public ICBMTycoon() {
@@ -97,11 +100,15 @@ public class ICBMTycoon implements ActionListener {
 					temp.remove(randomNum);
 				}
 				
-				changeScreen(new GameMap());
-				
 				for (int i = 0; i < 5; i++) {
 					ownedICBM.put(i, 0);
 				}
+				
+				for (Capital capitals : capitalsForGame) {
+					alive = alive + capitals.getPopulation();
+				}
+				
+				changeScreen(new GameMap());
 			}
 		} else if (com.equals("exitPopup")) {
 			((GameMap) screen).removePopup();
@@ -109,6 +116,12 @@ public class ICBMTycoon implements ActionListener {
 			Capital capital = capitalsForGame[Integer.parseInt(com.split(":")[1])];
 			GameMap gm = (GameMap) screen;
 			gm.clickCapital(capital);
+		} else if (com.equals("clickICBMs")) {
+			((GameMap) screen).clickICBMs();
+		} else if (com.equals("clickDead")) {
+			((GameMap) screen).clickDead();
+		} else if (com.equals("clickAlive")) {
+			((GameMap) screen).clickAlive();
 		} else if (com.equals("clickMoney")) {
 			((GameMap) screen).clickMoney();
 		} else if (com.startsWith("strike:")) {
@@ -471,8 +484,8 @@ public class ICBMTycoon implements ActionListener {
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", true);
 		Component[] capitalElements = new Component[20];
-		JLabel moneyText = new JLabel(NumberFormat.getInstance().format(money) + "K");
-		JButton clickMoney = new JButton();
+		JLabel icbmsText = new JLabel(), deadText = new JLabel(), aliveText = new JLabel(), moneyText = new JLabel();
+		JButton clickicbms = new JButton(), clickDead = new JButton(), clickAlive = new JButton(), clickMoney = new JButton();
 		
 		// popup
 		JPanel popup;
@@ -482,21 +495,56 @@ public class ICBMTycoon implements ActionListener {
 		JLabel population;
 		
 		int icbmClicks = 0;
-		int percentageStrike = 0;
-		int populationLow = 0;
-		int populationHigh = 0;
 		
 		public GameMap() {
 			panel.add(usMap);
 			usMap.setBounds(0, 0, windowWidth, windowHeight);
 			
+			usMap.add(icbmsText);
+			icbmsText.setFont(new Font("Arial", Font.PLAIN, 36));
+			icbmsText.setBounds(40, 1, 80, 38);
+			icbmsText.setHorizontalAlignment(SwingConstants.RIGHT);
+			
+			usMap.add(deadText);
+			deadText.setFont(new Font("Arial", Font.PLAIN, 30));
+			deadText.setBounds(170, 4, 135, 32);
+			deadText.setHorizontalAlignment(SwingConstants.RIGHT);
+			
+			usMap.add(aliveText);
+			aliveText.setFont(new Font("Arial", Font.PLAIN, 36));
+			aliveText.setBounds(355, 1, 215, 38);
+			aliveText.setHorizontalAlignment(SwingConstants.RIGHT);
+			
 			usMap.add(moneyText);
 			moneyText.setFont(new Font("Arial", Font.PLAIN, 36));
-			moneyText.setBounds(610, 2, 160, 38);
+			moneyText.setBounds(610, 1, 160, 38);
 			moneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 			moneyText.setForeground(Color.GREEN);
 			
+			updateText();
+			
 			addClickElements();
+			
+			clickicbms.setBounds(2, 1, 122, 74);
+			clickicbms.setOpaque(false);
+			clickicbms.setContentAreaFilled(false);
+			clickicbms.setBorderPainted(false);
+			clickicbms.addActionListener(inst);
+			clickicbms.setActionCommand("clickICBMs");
+			
+			clickDead.setBounds(138, 1, 167, 74);
+			clickDead.setOpaque(false);
+			clickDead.setContentAreaFilled(false);
+			clickDead.setBorderPainted(false);
+			clickDead.addActionListener(inst);
+			clickDead.setActionCommand("clickDead");
+			
+			clickAlive.setBounds(323, 1, 247, 74);
+			clickAlive.setOpaque(false);
+			clickAlive.setContentAreaFilled(false);
+			clickAlive.setBorderPainted(false);
+			clickAlive.addActionListener(inst);
+			clickAlive.setActionCommand("clickAlive");
 			
 			clickMoney.setBounds(580, 1, 196, 36);
 			clickMoney.setOpaque(false);
@@ -510,6 +558,20 @@ public class ICBMTycoon implements ActionListener {
 			exitPopup.setMargin(new Insets(0, 0, 0, 0));
 			exitPopup.addActionListener(inst);
 			exitPopup.setActionCommand("exitPopup");
+		}
+		
+		void updateText() {
+			int amount = 0;
+			for (Entry<Integer, Integer> icbms : ownedICBM.entrySet()) {
+				amount = amount + icbms.getValue();
+			}
+			icbmsText.setText(NumberFormat.getInstance().format(amount));
+			
+			deadText.setText(NumberFormat.getInstance().format(killed));
+			
+			aliveText.setText(NumberFormat.getInstance().format(alive - killed));
+			
+			moneyText.setText(NumberFormat.getInstance().format(money) + "K");
 		}
 
 		public void clickCapital(Capital c) {
@@ -571,6 +633,81 @@ public class ICBMTycoon implements ActionListener {
 			frame.repaint();
 		}
 		
+		public void clickICBMs() {
+			removeClickElements();
+			addCapitalsAsLabels();
+			
+			popup = new JPanel();
+			panel.add(popup);
+			panel.setComponentZOrder(popup, 0);
+			popup.setBounds(297, 228, 430, 120);
+			popup.setLayout(null);
+			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+			
+			popup.add(exitPopup);
+			exitPopup.setBounds(366, 30, 34, 34);
+			
+			JLabel title = new JLabel("ICBMs owned:");
+			popup.add(title);
+			title.setFont(new Font("Arial", Font.PLAIN, 28));
+			title.setBounds(30, 30, 500, 34);
+			
+			JLabel icbms = new JLabel(icbmsText.getText());
+			popup.add(icbms);
+			icbms.setFont(new Font("Arial", Font.PLAIN, 18));
+			icbms.setBounds(30, 64, 500, 20);
+		}
+		
+		public void clickDead() {
+			removeClickElements();
+			addCapitalsAsLabels();
+			
+			popup = new JPanel();
+			panel.add(popup);
+			panel.setComponentZOrder(popup, 0);
+			popup.setBounds(297, 228, 430, 120);
+			popup.setLayout(null);
+			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+			
+			popup.add(exitPopup);
+			exitPopup.setBounds(366, 30, 34, 34);
+			
+			JLabel title = new JLabel("People killed:");
+			popup.add(title);
+			title.setFont(new Font("Arial", Font.PLAIN, 28));
+			title.setBounds(30, 30, 500, 34);
+			
+			JLabel dead = new JLabel(deadText.getText());
+			popup.add(dead);
+			dead.setFont(new Font("Arial", Font.PLAIN, 18));
+			dead.setBounds(30, 64, 500, 20);
+		}
+		
+		public void clickAlive() {
+			removeClickElements();
+			addCapitalsAsLabels();
+			
+			popup = new JPanel();
+			panel.add(popup);
+			panel.setComponentZOrder(popup, 0);
+			popup.setBounds(297, 228, 430, 120);
+			popup.setLayout(null);
+			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+			
+			popup.add(exitPopup);
+			exitPopup.setBounds(366, 30, 34, 34);
+			
+			JLabel title = new JLabel("People alive:");
+			popup.add(title);
+			title.setFont(new Font("Arial", Font.PLAIN, 28));
+			title.setBounds(30, 30, 500, 34);
+			
+			JLabel alive = new JLabel(aliveText.getText());
+			popup.add(alive);
+			alive.setFont(new Font("Arial", Font.PLAIN, 18));
+			alive.setBounds(30, 64, 500, 20);
+		}
+		
 		public void clickMoney() {
 			removeClickElements();
 			addCapitalsAsLabels();
@@ -605,6 +742,9 @@ public class ICBMTycoon implements ActionListener {
 				((JButton) capitalElements[i]).addActionListener(inst);
 				((JButton) capitalElements[i]).setActionCommand("capital:" + i);
 			}
+			usMap.add(clickicbms);
+			usMap.add(clickDead);
+			usMap.add(clickAlive);
 			usMap.add(clickMoney);
 		}
 		
@@ -621,6 +761,9 @@ public class ICBMTycoon implements ActionListener {
 			for (Component capital : capitalElements) {
 				usMap.remove(capital);
 			}
+			usMap.remove(clickicbms);
+			usMap.remove(clickDead);
+			usMap.remove(clickAlive);
 			usMap.remove(clickMoney);
 		}
 		
@@ -671,6 +814,7 @@ public class ICBMTycoon implements ActionListener {
 							chance = chance + (icbmClicks / 16);
 							if (new Random().nextInt(100) < chance) { // ICBM hit
 								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationHigh() - (new Random().nextDouble() * (icbm.getPopulationHigh() - icbm.getPopulationLow() - (((double) icbm.getPopulationHigh() - (double) icbm.getPopulationLow()) / 100 * icbmClicks)))));
+								killed = killed + people;
 								JLabel hit = new JLabel("Congrats! Your " + icbm.getName() + " hit " + capitalSelected.getName() + " and killed " + NumberFormat.getInstance().format(people) + " people!");
 								popup.add(hit);
 								hit.setBounds(0, 230, 896, 28);
@@ -686,6 +830,7 @@ public class ICBMTycoon implements ActionListener {
 								intercepted.setFont(new Font("Arial", Font.PLAIN, 24));
 							}
 							icbmClicks = 0;
+							updateText();
 							new Timer().schedule(new TimerTask() {
 								public void run() {
 									removePopup();
