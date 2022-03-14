@@ -16,8 +16,11 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -43,6 +46,8 @@ public class ICBMTycoon implements ActionListener {
 	String name;
 	final Capital[] capitals = { new Capital(217, 120, 480000, "Olympia"), new Capital(201, 157, 168000, "Salem"), new Capital(187, 274, 516000, "Sacramento"), new Capital(226, 270, 54000, "Carson City"), new Capital(303, 195, 240000, "Boise"), new Capital(368, 134, 32091, "Helena"), new Capital(433, 216, 57000, "Cheyenne"), new Capital(335, 252, 204000, "Salt Lake City"), new Capital(326, 385, 1597000, "Phoenix"), new Capital(448, 258, 722000, "Denver"), new Capital(405, 348, 84000, "Santa Fe"), new Capital(542, 456, 948000, "Austin"), new Capital(546, 336, 666000, "Oklahoma City"), new Capital(558, 272, 123000, "Topeka"), new Capital(546, 243, 287000, "Lincoln"), new Capital(514, 180, 14091, "Pierre"), new Capital(511, 129, 69000, "Bismarck"), new Capital(597, 171, 312000, "St. Paul"), new Capital(612, 225, 213000, "Des Moines"), new Capital(618, 282, 42000, "Jefferson City"), new Capital(620, 355, 206000, "Little Rock"), new Capital(629, 447, 223000, "Baton Rouge"), new Capital(649, 419, 159000, "Jackson"), new Capital(711, 333, 695000, "Nashville"), new Capital(730, 305, 28602, "Frankfort"), new Capital(667, 271, 107000, "Springfield"), new Capital(669, 189, 262000, "Madison"), new Capital(732, 202, 106000, "Lansing"), new Capital(706, 268, 893000, "Indianapolis"), new Capital(759, 254, 910000, "Columbus"), new Capital(774, 291, 41000, "Charleston"), new Capital(706, 415, 199000, "Montgomery"), new Capital(741, 448, 201000, "Tallahassee"), new Capital(748, 386, 503000, "Atlanta"), new Capital(789, 380, 142000, "Columbia"), new Capital(831, 336, 474000, "Raleigh"), new Capital(846, 314, 230000, "Richmond"), new Capital(846, 279, 46000, "Annapolis"), new Capital(840, 284, 692683, "Washington D.C."), new Capital(867, 279, 36000, "Dover"), new Capital(825, 245, 46000, "Harrisburg"), new Capital(866, 200, 103000, "Albany"), new Capital(876, 256, 96000, "Trenton"), new Capital(898, 226, 116000, "Hartford"), new Capital(914, 226, 203000, "Providence"), new Capital(921, 212, 617000, "Boston"), new Capital(894, 165, 8074, "Montpelier"), new Capital(907, 190, 48000, "Concord"), new Capital(936, 164, 188999, "Augusta"), new Capital(795, 551, 854, "Mummy Town") };
 	Capital[] capitalsForGame = new Capital[20];
+	final ICBM[] icbms = { new ICBM(500, 70, 25, 30, "IRBM"), new ICBM(750, 65, 40, 50, "Standard ICBM"), new ICBM(900, 95, 35, 40, "Trident II"), new ICBM(1000, 70, 55, 70, "Sarmat"), new ICBM(1250, 55, 70, 95, "TSAR ICBM") };
+	HashMap<Integer, Integer> ownedICBM = new HashMap<Integer, Integer>();
 	int money = 5000; // starting
 	
 	public ICBMTycoon() {
@@ -93,6 +98,10 @@ public class ICBMTycoon implements ActionListener {
 				}
 				
 				changeScreen(new GameMap());
+				
+				for (int i = 0; i < 5; i++) {
+					ownedICBM.put(i, 0);
+				}
 			}
 		} else if (com.equals("exitPopup")) {
 			((GameMap) screen).removePopup();
@@ -102,6 +111,10 @@ public class ICBMTycoon implements ActionListener {
 			gm.clickCapital(capital);
 		} else if (com.equals("clickMoney")) {
 			((GameMap) screen).clickMoney();
+		} else if (com.startsWith("strike:")) {
+			((GameMap) screen).strike(Integer.parseInt(com.split(":")[1]));
+		} else if (com.equals("clickICBM")) {
+			((GameMap) screen).clickICBM();
 		}
 	}
 	
@@ -173,6 +186,42 @@ public class ICBMTycoon implements ActionListener {
 		
 		public int getPopulation() {
 			return this.population;
+		}
+		
+		public String getName() {
+			return this.name;
+		}
+	}
+	
+	class ICBM {
+		final int price;
+		final int percentageStrike;
+		final int populationLow;
+		final int populationHigh;
+		final String name;
+		
+		public ICBM(int price, int percentageStrike, int populationLow, int populationHigh, String name) {
+			this.price = price;
+			this.percentageStrike = percentageStrike;
+			this.populationLow = populationLow;
+			this.populationHigh = populationHigh;
+			this.name = name;
+		}
+		
+		public int getPrice() {
+			return this.price;
+		}
+		
+		public int getpercentageStrike() {
+			return this.percentageStrike;
+		}
+		
+		public int getPopulationLow() {
+			return this.populationLow;
+		}
+		
+		public int getPopulationHigh() {
+			return this.populationHigh;
 		}
 		
 		public String getName() {
@@ -428,7 +477,14 @@ public class ICBMTycoon implements ActionListener {
 		// popup
 		JPanel popup;
 		JButton exitPopup = new JButton("X");
+		Capital capitalSelected;
+		JLabel icbmLayout;
+		JLabel population;
 		
+		int icbmClicks = 0;
+		int percentageStrike = 0;
+		int populationLow = 0;
+		int populationHigh = 0;
 		
 		public GameMap() {
 			panel.add(usMap);
@@ -455,10 +511,12 @@ public class ICBMTycoon implements ActionListener {
 			exitPopup.addActionListener(inst);
 			exitPopup.setActionCommand("exitPopup");
 		}
-		
+
 		public void clickCapital(Capital c) {
 			removeClickElements();
 			addCapitalsAsLabels();
+			
+			capitalSelected = c;
 			
 			popup = new JPanel();
 			panel.add(popup);
@@ -475,94 +533,35 @@ public class ICBMTycoon implements ActionListener {
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
 			
-			JLabel population = new JLabel("Population: " + NumberFormat.getInstance().format(c.getPopulation()));
+			population = new JLabel("Population: " + NumberFormat.getInstance().format(c.getPopulation()));
 			popup.add(population);
 			population.setFont(new Font("Arial", Font.PLAIN, 18));
 			population.setBounds(30, 64, 500, 20);
 			
-			JLabel icbmLayout = initializeImageLabel("icbmlayout", true);
+			icbmLayout = initializeImageLabel("icbmlayout", true);
 			popup.add(icbmLayout);
 			icbmLayout.setBounds(11, 123, 874, 370);
 			
-			JLabel IRBMStrike = new JLabel(calcStrike(c.getPopulation(), 70) + "%");
-			icbmLayout.add(IRBMStrike);
-			IRBMStrike.setBounds(15, 192, 50, 20);
-			JLabel IRBMPop = new JLabel("25-30%");
-			icbmLayout.add(IRBMPop);
-			IRBMPop.setBounds(15, 228, 160, 20);
-			JLabel IRBMPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(25, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(30, c.getPopulation())) + ")");
-			icbmLayout.add(IRBMPopNums);
-			IRBMPopNums.setBounds(15, 242, 160, 20);
-			JButton IRBMButton = new JButton("Strike!");
-			icbmLayout.add(IRBMButton);
-			IRBMButton.setFont(new Font("Arial", Font.PLAIN, 28));
-			IRBMButton.setBounds(15, 325, 136, 30);
-			IRBMButton.addActionListener(inst);
-			IRBMButton.setActionCommand("strike:irbm");
-			
-			JLabel SICBMStrike = new JLabel(calcStrike(c.getPopulation(), 65) + "%");
-			icbmLayout.add(SICBMStrike);
-			SICBMStrike.setBounds(192, 192, 50, 20);
-			JLabel SICBMPop = new JLabel("40-50%");
-			icbmLayout.add(SICBMPop);
-			SICBMPop.setBounds(192, 228, 160, 20);
-			JLabel SICBMPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(40, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(50, c.getPopulation())) + ")");
-			icbmLayout.add(SICBMPopNums);
-			SICBMPopNums.setBounds(192, 242, 160, 20);
-			JButton SICBMButton = new JButton("Strike!");
-			icbmLayout.add(SICBMButton);
-			SICBMButton.setFont(new Font("Arial", Font.PLAIN, 28));
-			SICBMButton.setBounds(192, 325, 136, 30);
-			SICBMButton.addActionListener(inst);
-			SICBMButton.setActionCommand("strike:sicbm");
-			
-			JLabel tridentStrike = new JLabel(calcStrike(c.getPopulation(), 95) + "%");
-			icbmLayout.add(tridentStrike);
-			tridentStrike.setBounds(369, 192, 50, 20);
-			JLabel tridentPop = new JLabel("35-40%");
-			icbmLayout.add(tridentPop);
-			tridentPop.setBounds(369, 228, 160, 20);
-			JLabel tridentPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(35, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(40, c.getPopulation())) + ")");
-			icbmLayout.add(tridentPopNums);
-			tridentPopNums.setBounds(369, 242, 160, 20);
-			JButton tridentButton = new JButton("Strike!");
-			icbmLayout.add(tridentButton);
-			tridentButton.setFont(new Font("Arial", Font.PLAIN, 28));
-			tridentButton.setBounds(369, 325, 136, 30);
-			tridentButton.addActionListener(inst);
-			tridentButton.setActionCommand("strike:trident");
-			
-			JLabel sarmatStrike = new JLabel(calcStrike(c.getPopulation(), 70) + "%");
-			icbmLayout.add(sarmatStrike);
-			sarmatStrike.setBounds(546, 192, 50, 20);
-			JLabel sarmatPop = new JLabel("55-70%");
-			icbmLayout.add(sarmatPop);
-			sarmatPop.setBounds(546, 228, 160, 20);
-			JLabel sarmatPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(55, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(70, c.getPopulation())) + ")");
-			icbmLayout.add(sarmatPopNums);
-			sarmatPopNums.setBounds(546, 242, 160, 20);
-			JButton sarmatButton = new JButton("Strike!");
-			icbmLayout.add(sarmatButton);
-			sarmatButton.setFont(new Font("Arial", Font.PLAIN, 28));
-			sarmatButton.setBounds(546, 325, 136, 30);
-			sarmatButton.addActionListener(inst);
-			sarmatButton.setActionCommand("strike:sarmat");
-			
-			JLabel TSARStrike = new JLabel(calcStrike(c.getPopulation(), 55) + "%");
-			icbmLayout.add(TSARStrike);
-			TSARStrike.setBounds(723, 192, 50, 20);
-			JLabel TSARPop = new JLabel("70-95%");
-			icbmLayout.add(TSARPop);
-			TSARPop.setBounds(723, 228, 160, 20);
-			JLabel TSARPopNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(70, c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(95, c.getPopulation())) + ")");
-			icbmLayout.add(TSARPopNums);
-			TSARPopNums.setBounds(723, 242, 160, 20);
-			JButton TSARButton = new JButton("Strike!");
-			icbmLayout.add(TSARButton);
-			TSARButton.setFont(new Font("Arial", Font.PLAIN, 28));
-			TSARButton.setBounds(723, 325, 136, 30);
-			TSARButton.addActionListener(inst);
-			TSARButton.setActionCommand("strike:tsar");
+			for (int i = 0; i < 5; i++) {
+				ICBM icbm = icbms[i];
+				int x = 15 + (i * 177);
+				
+				JLabel strike = new JLabel(calcStrike(c.getPopulation(), icbm.getpercentageStrike()) + "%");
+				icbmLayout.add(strike);
+				strike.setBounds(x, 192, 50, 20);
+				JLabel population = new JLabel(icbm.getPopulationLow() + "-" + icbm.getPopulationHigh() + "%");
+				icbmLayout.add(population);
+				population.setBounds(x, 228, 160, 20);
+				JLabel populationNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(icbm.getPopulationLow(), c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(icbm.getPopulationHigh(), c.getPopulation())) + ")");
+				icbmLayout.add(populationNums);
+				populationNums.setBounds(x, 242, 160, 20);
+				JButton launchButton = new JButton("Strike!");
+				icbmLayout.add(launchButton);
+				launchButton.setFont(new Font("Arial", Font.PLAIN, 28));
+				launchButton.setBounds(x, 325, 136, 30);
+				launchButton.addActionListener(inst);
+				launchButton.setActionCommand("strike:" + i);
+			}
 		}
 		
 		public void removePopup() {
@@ -623,6 +622,82 @@ public class ICBMTycoon implements ActionListener {
 				usMap.remove(capital);
 			}
 			usMap.remove(clickMoney);
+		}
+		
+		public void strike(int icbmClicked) {
+			ICBM icbm = icbms[icbmClicked];
+			
+			popup.remove(exitPopup);
+			popup.remove(icbmLayout);
+			popup.remove(population);
+			popup.repaint();
+			JButton icbmClick = new JButton("CLICK!!");
+			popup.add(icbmClick);
+			icbmClick.setFont(new Font("Arial", Font.BOLD, 104));
+			icbmClick.setBounds(224, 126, 448, 252);
+			icbmClick.setBackground(new Color(207, 91, 91));
+			icbmClick.setForeground(new Color(125, 12, 12));
+			icbmClick.addActionListener(inst);
+			icbmClick.setActionCommand("clickICBM");
+			new Timer().schedule(new TimerTask() {
+				public void run() {
+					popup.remove(icbmClick);
+					popup.repaint();
+					if (icbmClicks > 50) {
+						icbmClicks = 50;
+					}
+					JLabel icbmLaunching = new JLabel(icbm.getName() + " launching to " + capitalSelected.getName());
+					popup.add(icbmLaunching);
+					icbmLaunching.setBounds(0, 230, 896, 42);
+					icbmLaunching.setHorizontalAlignment(SwingConstants.CENTER);
+					icbmLaunching.setForeground(new Color(29, 161, 46));
+					icbmLaunching.setFont(new Font("Arial", Font.PLAIN, 38));
+					for (int i = 0; i < 11; i++) {
+						int j = i; // get around timer limitation
+						new Timer().schedule(new TimerTask() {
+							public void run() {
+								if (j % 2 == 0) {
+									icbmLaunching.setVisible(false);
+								} else {
+									icbmLaunching.setVisible(true);
+								}
+							}
+						}, i * 400);
+					}
+					new Timer().schedule(new TimerTask() {
+						public void run() {
+							popup.remove(icbmLaunching);
+							int chance = calcStrike(capitalSelected.getPopulation(), icbm.percentageStrike);
+							chance = chance + (icbmClicks / 16);
+							if (new Random().nextInt(100) < chance) { // ICBM hit
+								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationLow() + (new Random().nextDouble() * (icbm.getPopulationHigh() - ((icbm.getPopulationHigh() - icbm.getPopulationLow()) / 100 * icbmClicks)))));
+								JLabel hit = new JLabel("Congrats! Your " + icbm.getName() + " hit " + capitalSelected.getName() + " and killed " + NumberFormat.getInstance().format(people) + " people!");
+								popup.add(hit);
+								hit.setBounds(0, 230, 896, 28);
+								hit.setHorizontalAlignment(SwingConstants.CENTER);
+								hit.setForeground(Color.GREEN);
+								hit.setFont(new Font("Arial", Font.PLAIN, 24));
+							} else { // ICBM got intercepted
+								JLabel intercepted = new JLabel("Unfortunately, your " + icbm.getName() + " was intercepted");
+								popup.add(intercepted);
+								intercepted.setBounds(0, 230, 896, 28);
+								intercepted.setHorizontalAlignment(SwingConstants.CENTER);
+								intercepted.setForeground(Color.RED);
+								intercepted.setFont(new Font("Arial", Font.PLAIN, 24));
+							}
+							new Timer().schedule(new TimerTask() {
+								public void run() {
+									removePopup();
+								}
+							}, 4500);
+						}
+					}, 5000);
+				}
+			}, 5000);
+		}
+		
+		public void clickICBM() {
+			icbmClicks++;
 		}
 		
 		@Override
