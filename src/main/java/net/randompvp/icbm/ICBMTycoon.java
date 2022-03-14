@@ -583,7 +583,6 @@ public class ICBMTycoon implements ActionListener {
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
 			
-			JButton exitPopup = new JButton("X");
 			popup.add(exitPopup);
 			exitPopup.setBounds(366, 30, 34, 34);
 			
