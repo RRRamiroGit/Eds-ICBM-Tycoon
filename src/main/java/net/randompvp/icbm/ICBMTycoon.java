@@ -56,6 +56,7 @@ public class ICBMTycoon implements ActionListener {
 	int killed = 0;
 	int alive = 0;
 	int money = 5000; // starting
+	int misses = 0;
 
 	public ICBMTycoon() {
 		inst = this;
@@ -133,6 +134,8 @@ public class ICBMTycoon implements ActionListener {
 			((GameMap) screen).strike(Integer.parseInt(com.split(":")[1]));
 		} else if (com.equals("clickICBM")) {
 			((GameMap) screen).clickICBM();
+		} else if (com.equals("interceptICBM")) {
+			((GameMap) screen).clickIntercept();
 		}
 	}
 
@@ -513,6 +516,10 @@ public class ICBMTycoon implements ActionListener {
 		boolean noExit = false;
 
 		int icbmClicks = 0;
+		
+		Timer interceptTimer;
+		JButton interceptButton = new JButton("INTERCEPT");
+		JLabel interceptText = new JLabel("US ICBM inbound, click the red button on screen to intercept");
 
 		public GameMap() {
 			panel.add(usMap);
@@ -590,6 +597,16 @@ public class ICBMTycoon implements ActionListener {
 			exitPopup.setMargin(new Insets(0, 0, 0, 0));
 			exitPopup.addActionListener(inst);
 			exitPopup.setActionCommand("exitPopup");
+			
+			interceptButton.setFont(new Font("Arial", Font.PLAIN, 28));
+			interceptButton.setMargin(new Insets(0, 0, 0, 0));
+			interceptButton.setBackground(new Color(156, 0, 3));
+			interceptButton.setBounds(20 + random.nextInt(814), 526, 170, 30);
+			interceptButton.addActionListener(inst);
+			interceptButton.setActionCommand("interceptICBM");
+			
+			interceptText.setFont(new Font("Arial", Font.BOLD, 22));
+			interceptText.setBounds(230, 50, 710, 26);
 		}
 
 		void updateText() {
@@ -768,21 +785,51 @@ public class ICBMTycoon implements ActionListener {
 			if (popup != null)
 				removePopup();
 			addCapitalsAsLabels();
-			usMap.repaint();
-			JButton interceptButton = new JButton("INTERCEPT");
 			usMap.add(interceptButton);
-			interceptButton.setFont(new Font("Arial", Font.PLAIN, 28));
-			interceptButton.setMargin(new Insets(0, 0, 0, 0));
-			interceptButton.setBackground(new Color(156, 0, 3));
-			interceptButton.setBounds(20 + random.nextInt(814), 526, 170, 30);
-			new Timer().schedule(new TimerTask() {
+			usMap.add(interceptText);
+			interceptTimer = new Timer();
+			interceptTimer.schedule(new TimerTask() {
 				public void run() {
+					misses++;
 					usMap.remove(interceptButton);
+					usMap.remove(interceptText);
 					removeClickElements();
 					addClickElements();
-					usMap.repaint();
+					JLabel missText = new JLabel("You didn't intercept the ICBM! (" + misses + " misses)");
+					usMap.add(missText);
+					missText.setFont(new Font("Arial", Font.BOLD, 22));
+					missText.setForeground(Color.RED);
+					missText.setBounds(230, 50, 710, 26);
+					new Timer().schedule(new TimerTask() {
+						public void run() {
+							usMap.remove(missText);
+							usMap.repaint();
+						}
+					}, 2500);
 				}
 			}, 2000);
+		}
+		
+		public void clickIntercept() {
+			interceptTimer.cancel();
+			usMap.remove(interceptButton);
+			usMap.remove(interceptText);
+			removeClickElements();
+			addClickElements();
+			int moneyGained = (random.nextInt(21) * 10) + 500;
+			money = money + moneyGained;
+			updateText();
+			JLabel hitText = new JLabel("You intercepted the ICBM! (+$" + moneyGained + "K)");
+			usMap.add(hitText);
+			hitText.setFont(new Font("Arial", Font.BOLD, 22));
+			hitText.setForeground(Color.GREEN);
+			hitText.setBounds(230, 50, 710, 26);
+			new Timer().schedule(new TimerTask() {
+				public void run() {
+					usMap.remove(hitText);
+					usMap.repaint();
+				}
+			}, 2500);
 		}
 
 		void addClickElements() {
