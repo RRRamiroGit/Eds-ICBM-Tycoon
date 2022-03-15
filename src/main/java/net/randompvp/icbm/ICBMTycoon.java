@@ -35,13 +35,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class ICBMTycoon implements ActionListener {
-	
+
 	public static ICBMTycoon inst; // Instance of the class
-	
+
 	// Window dimensions
 	final int windowHeight = 576;
 	final int windowWidth = 1024;
-	
+
 	JFrame frame;
 	JPanel panel;
 	Page screen;
@@ -54,7 +54,7 @@ public class ICBMTycoon implements ActionListener {
 	int killed = 0;
 	int alive = 0;
 	int money = 5000; // starting
-	
+
 	public ICBMTycoon() {
 		inst = this;
 		frame = new JFrame();
@@ -67,10 +67,10 @@ public class ICBMTycoon implements ActionListener {
 		frame.getContentPane().add(panel);
 		frame.setTitle("Ed's ICBM Tycoon"); // Set the title of the window
 		frame.setVisible(true);
-        frame.pack();
-        changeScreen(new Welcome()); // Make the welcome screen appear
+		frame.pack();
+		changeScreen(new Welcome()); // Make the welcome screen appear
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String com = e.getActionCommand();
@@ -92,7 +92,7 @@ public class ICBMTycoon implements ActionListener {
 				nameCl.emptyName();
 			} else {
 				name = nameCl.getName();
-				
+
 				// randomize 20 capitals and put them in a new list
 				List<Capital> temp = new ArrayList<Capital>(Arrays.asList(capitals));
 				Random random = new Random();
@@ -101,15 +101,17 @@ public class ICBMTycoon implements ActionListener {
 					capitalsForGame[i] = temp.get(randomNum);
 					temp.remove(randomNum);
 				}
-				
+
 				for (int i = 0; i < 5; i++) {
 					ownedICBM.put(i, 0);
 				}
-				
+
 				for (Capital capitals : capitalsForGame) {
 					alive = alive + capitals.getPopulation();
 				}
-				
+
+				runUSInbound();
+
 				changeScreen(new GameMap());
 			}
 		} else if (com.equals("exitPopup")) {
@@ -132,30 +134,30 @@ public class ICBMTycoon implements ActionListener {
 			((GameMap) screen).clickICBM();
 		}
 	}
-	
+
 	void changeScreen(Page newScreen) {
 		if (screen != null) // If there is a screen then remove it first
 			screen.remove();
 		screen = newScreen; // Set screen variable
 		frame.repaint();
 	}
-	
+
 	int cenElement(int width) {
 		return (windowWidth - width) / 2;
 	}
-	
+
 	public void capitalPosition(Component component, int x, int y) {
 		component.setBounds(x - 3, y - 3, 9, 9);
 	}
-	
+
 	int calcStrike(double population, int basePercent) {
 		return (int) (basePercent - ((population / 140000) - 4.4));
 	}
-	
+
 	int percentOfPop(int percentage, double population) {
 		return (int) ((population / 100) * percentage);
 	}
-	
+
 	JLabel initializeImageLabel(String imageName, boolean isPNG) {
 		try {
 			return new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + "." + (isPNG ? "png" : "jpg")))));
@@ -164,7 +166,7 @@ public class ICBMTycoon implements ActionListener {
 		}
 		return null;
 	}
-	
+
 	JButton initializeImageButton(String imageName, boolean isPNG) {
 		try {
 			return new JButton(new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/" + imageName + "." + (isPNG ? "png" : "jpg")))));
@@ -173,48 +175,48 @@ public class ICBMTycoon implements ActionListener {
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
 		new ICBMTycoon();
 	}
-	
+
 	class Capital {
 		final int x;
 		final int y;
 		final int population;
 		final String name;
-		
+
 		public Capital(int x, int y, int population, String name) {
 			this.x = x;
 			this.y = y;
 			this.population = population;
 			this.name = name;
 		}
-		
+
 		public int getX() {
 			return this.x;
 		}
-		
+
 		public int getY() {
 			return this.y;
 		}
-		
+
 		public int getPopulation() {
 			return this.population;
 		}
-		
+
 		public String getName() {
 			return this.name;
 		}
 	}
-	
+
 	class ICBM {
 		final int price;
 		final int percentageStrike;
 		final int populationLow;
 		final int populationHigh;
 		final String name;
-		
+
 		public ICBM(int price, int percentageStrike, int populationLow, int populationHigh, String name) {
 			this.price = price;
 			this.percentageStrike = percentageStrike;
@@ -222,32 +224,32 @@ public class ICBMTycoon implements ActionListener {
 			this.populationHigh = populationHigh;
 			this.name = name;
 		}
-		
+
 		public int getPrice() {
 			return this.price;
 		}
-		
+
 		public int getpercentageStrike() {
 			return this.percentageStrike;
 		}
-		
+
 		public int getPopulationLow() {
 			return this.populationLow;
 		}
-		
+
 		public int getPopulationHigh() {
 			return this.populationHigh;
 		}
-		
+
 		public String getName() {
 			return this.name;
 		}
 	}
-	
+
 	abstract class Page { // Class to be extended to for each class page of the game
 		abstract public void remove();
 	}
-	
+
 	class Welcome extends Page {
 		JButton startButton = new JButton("Start!");
 		JButton exitButton = new JButton("Exit");
@@ -256,51 +258,51 @@ public class ICBMTycoon implements ActionListener {
 		JLabel author = new JLabel("Developed by Ramiro");
 		JLabel author2 = new JLabel("Concept by Ed");
 		JLabel icbmImage = initializeImageLabel("icbm", false);
-		
+
 		public Welcome() {
 			int buttonWidth = 140;
 			int buttonHeight = 50;
 			panel.add(icbmImage);
 			icbmImage.setBounds(0, 0, windowWidth, windowHeight);
-			
+
 			icbmImage.add(startButton);
 			startButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			startButton.setBounds(332, 238, buttonWidth, buttonHeight);
 			startButton.addActionListener(inst);
 			startButton.setActionCommand("startGame");
-			
+
 			icbmImage.add(exitButton);
 			exitButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			exitButton.setBounds(552, 238, buttonWidth, buttonHeight);
 			exitButton.addActionListener(inst);
 			exitButton.setActionCommand("exitGame");
-			
+
 			icbmImage.add(creditButton);
 			creditButton.setFont(new Font("Arial", Font.PLAIN, 34));
 			creditButton.setBounds(cenElement(360), 305, 360, buttonHeight);
 			creditButton.addActionListener(inst);
 			creditButton.setActionCommand("credit");
-			
+
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
 			welcome.setBounds(cenElement(820), 50, 820, 32);
 			welcome.setForeground(Color.WHITE);
-			
+
 			icbmImage.add(author);
 			author.setBounds(cenElement(120), 85, 120, 14);
 			author.setForeground(Color.WHITE);
-			
+
 			icbmImage.add(author2);
 			author2.setBounds(cenElement(80), 102, 80, 14);
 			author2.setForeground(Color.WHITE);
 		}
-		
+
 		@Override
 		public void remove() {
 			panel.remove(icbmImage);
 		}
 	}
-	
+
 	class Credits extends Page {
 		JButton backWelcome = new JButton("<");
 		JLabel text1 = new JLabel("Ed's ICBM Tycoon");
@@ -309,7 +311,7 @@ public class ICBMTycoon implements ActionListener {
 		JLabel text4 = new JLabel("Ideas by Ed Ruiz");
 		JLabel text5 = new JLabel("Welcome page image from Rodong Sinmun");
 		JLabel text6 = new JLabel("Capital population numbers from Wikipedia®");
-		
+
 		public Credits() {
 			panel.add(backWelcome);
 			backWelcome.setFont(new Font("Arial", Font.PLAIN, 38));
@@ -317,32 +319,32 @@ public class ICBMTycoon implements ActionListener {
 			backWelcome.addActionListener(inst);
 			backWelcome.setActionCommand("backWelcome");
 			backWelcome.setMargin(new Insets(0, 0, 0, 0));
-			
+
 			panel.add(text1);
 			text1.setFont(new Font("Arial", Font.PLAIN, 18));
 			text1.setBounds(10, 58, 600, 20);
-			
+
 			panel.add(text2);
 			text2.setFont(new Font("Arial", Font.PLAIN, 18));
 			text2.setBounds(10, 78, 600, 20);
-			
+
 			panel.add(text3);
 			text3.setFont(new Font("Arial", Font.PLAIN, 18));
 			text3.setBounds(10, 98, 600, 20);
-			
+
 			panel.add(text4);
 			text4.setFont(new Font("Arial", Font.PLAIN, 18));
 			text4.setBounds(10, 118, 600, 20);
-			
+
 			panel.add(text5);
 			text5.setFont(new Font("Arial", Font.PLAIN, 18));
 			text5.setBounds(10, 138, 600, 20);
-			
+
 			panel.add(text6);
 			text6.setFont(new Font("Arial", Font.PLAIN, 18));
 			text6.setBounds(10, 158, 600, 20);
 		}
-		
+
 		@Override
 		public void remove() {
 			panel.remove(backWelcome);
@@ -354,7 +356,7 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(text6);
 		}
 	}
-	
+
 	class Begin1 extends Page {
 		JLabel text1 = new JLabel("You have been ordered by a Russian government official named");
 		JLabel text2 = new JLabel("Ed HHahdhcuud to send ICBM's to the United States as while the");
@@ -363,34 +365,34 @@ public class ICBMTycoon implements ActionListener {
 		JLabel text5 = new JLabel("hundreds of thousands of causalities.");
 		JButton continueNext = new JButton("Continue");
 		JButton backWelcome = new JButton("<");
-		
+
 		public Begin1() {
 			panel.add(text1);
 			text1.setFont(new Font("Arial", Font.PLAIN, 34));
 			text1.setBounds(cenElement(940), 58, 940, 36);
-			
+
 			panel.add(text2);
 			text2.setFont(new Font("Arial", Font.PLAIN, 34));
 			text2.setBounds(cenElement(970), 90, 970, 36);
-			
+
 			panel.add(text3);
 			text3.setFont(new Font("Arial", Font.PLAIN, 34));
 			text3.setBounds(cenElement(880), 122, 880, 36);
-			
+
 			panel.add(text4);
 			text4.setFont(new Font("Arial", Font.PLAIN, 34));
 			text4.setBounds(cenElement(950), 154, 950, 36);
-			
+
 			panel.add(text5);
 			text5.setFont(new Font("Arial", Font.PLAIN, 34));
 			text5.setBounds(cenElement(550), 186, 550, 36);
-			
+
 			panel.add(continueNext);
 			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
 			continueNext.setBounds(cenElement(220), 320, 220, 46);
 			continueNext.addActionListener(inst);
 			continueNext.setActionCommand("beginContinue1");
-			
+
 			panel.add(backWelcome);
 			backWelcome.setFont(new Font("Arial", Font.PLAIN, 38));
 			backWelcome.setBounds(10, 10, 42, 42);
@@ -398,7 +400,7 @@ public class ICBMTycoon implements ActionListener {
 			backWelcome.setActionCommand("backWelcome");
 			backWelcome.setMargin(new Insets(0, 0, 0, 0));
 		}
-		
+
 		@Override
 		public void remove() {
 			panel.remove(text1);
@@ -410,28 +412,28 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(backWelcome);
 		}
 	}
-	
+
 	class Begin2 extends Page {
 		JLabel text1 = new JLabel("After the tragic event the world prepared itself");
 		JLabel text2 = new JLabel("for nuclear war...");
 		JButton continueNext = new JButton("Continue");
-		
+
 		public Begin2() {
 			panel.add(text1);
 			text1.setFont(new Font("Arial", Font.PLAIN, 34));
 			text1.setBounds(cenElement(670), 58, 670, 36);
-			
+
 			panel.add(text2);
 			text2.setFont(new Font("Arial", Font.PLAIN, 34));
 			text2.setBounds(cenElement(250), 90, 250, 36);
-			
+
 			panel.add(continueNext);
 			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
 			continueNext.setBounds(cenElement(220), 320, 220, 46);
 			continueNext.addActionListener(inst);
 			continueNext.setActionCommand("beginContinue2");
 		}
-		
+
 		@Override
 		public void remove() {
 			panel.remove(text1);
@@ -439,41 +441,41 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(continueNext);
 		}
 	}
-	
+
 	class EnterName extends Page {
 		JLabel enterNameText = new JLabel("Please enter your name below!");
 		JTextField nameBox = new JTextField();
 		JLabel emptyName = new JLabel("You can't leave the box empty!");
 		JButton continueNext = new JButton("Let's Begin!");
-		
+
 		public EnterName() {
 			panel.add(enterNameText);
 			enterNameText.setFont(new Font("Arial", Font.PLAIN, 34));
 			enterNameText.setBounds(cenElement(460), 58, 460, 36);
-			
+
 			panel.add(nameBox);
 			nameBox.setBounds(cenElement(300), 120, 300, 22);
-			
+
 			panel.add(emptyName);
 			emptyName.setForeground(Color.RED);
 			emptyName.setBounds(682, 120, 180, 22);
 			emptyName.setVisible(false);
-			
+
 			panel.add(continueNext);
 			continueNext.setFont(new Font("Arial", Font.PLAIN, 38));
 			continueNext.setBounds(cenElement(240), 320, 240, 46);
 			continueNext.addActionListener(inst);
 			continueNext.setActionCommand("beginName");
 		}
-		
+
 		public String getName() {
 			return nameBox.getText();
 		}
-		
+
 		public void emptyName() {
 			emptyName.setVisible(true);
 		}
-		
+
 		@Override
 		public void remove() {
 			panel.remove(enterNameText);
@@ -482,134 +484,134 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(continueNext);
 		}
 	}
-	
+
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", true);
 		Component[] capitalElements = new Component[20];
 		JLabel icbmsText = new JLabel(), deadText = new JLabel(), aliveText = new JLabel(), moneyText = new JLabel();
 		JButton clickicbms = new JButton(), clickDead = new JButton(), clickAlive = new JButton(), clickMoney = new JButton();
-		
+
 		// popup
 		JPanel popup;
 		JButton exitPopup = new JButton("X");
 		Capital capitalSelected;
 		JLabel icbmLayout;
 		JLabel population;
-		
+
 		int icbmClicks = 0;
-		
+
 		public GameMap() {
 			panel.add(usMap);
 			usMap.setBounds(0, 0, windowWidth, windowHeight);
-			
+
 			usMap.add(icbmsText);
 			icbmsText.setFont(new Font("Arial", Font.PLAIN, 36));
 			icbmsText.setBounds(40, 1, 80, 38);
 			icbmsText.setHorizontalAlignment(SwingConstants.RIGHT);
-			
+
 			usMap.add(deadText);
 			deadText.setFont(new Font("Arial", Font.PLAIN, 30));
 			deadText.setBounds(170, 4, 135, 32);
 			deadText.setHorizontalAlignment(SwingConstants.RIGHT);
-			
+
 			usMap.add(aliveText);
 			aliveText.setFont(new Font("Arial", Font.PLAIN, 36));
 			aliveText.setBounds(355, 1, 215, 38);
 			aliveText.setHorizontalAlignment(SwingConstants.RIGHT);
-			
+
 			usMap.add(moneyText);
 			moneyText.setFont(new Font("Arial", Font.PLAIN, 36));
 			moneyText.setBounds(610, 1, 160, 38);
 			moneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 			moneyText.setForeground(Color.GREEN);
-			
+
 			updateText();
-			
+
 			addClickElements();
-			
+
 			clickicbms.setBounds(2, 1, 122, 74);
 			clickicbms.setOpaque(false);
 			clickicbms.setContentAreaFilled(false);
 			clickicbms.setBorderPainted(false);
 			clickicbms.addActionListener(inst);
 			clickicbms.setActionCommand("clickICBMs");
-			
+
 			clickDead.setBounds(138, 1, 167, 74);
 			clickDead.setOpaque(false);
 			clickDead.setContentAreaFilled(false);
 			clickDead.setBorderPainted(false);
 			clickDead.addActionListener(inst);
 			clickDead.setActionCommand("clickDead");
-			
+
 			clickAlive.setBounds(323, 1, 247, 74);
 			clickAlive.setOpaque(false);
 			clickAlive.setContentAreaFilled(false);
 			clickAlive.setBorderPainted(false);
 			clickAlive.addActionListener(inst);
 			clickAlive.setActionCommand("clickAlive");
-			
+
 			clickMoney.setBounds(580, 1, 196, 36);
 			clickMoney.setOpaque(false);
 			clickMoney.setContentAreaFilled(false);
 			clickMoney.setBorderPainted(false);
 			clickMoney.addActionListener(inst);
 			clickMoney.setActionCommand("clickMoney");
-			
+
 			exitPopup.setFont(new Font("Arial", Font.PLAIN, 28));
 			exitPopup.setBackground(Color.RED);
 			exitPopup.setMargin(new Insets(0, 0, 0, 0));
 			exitPopup.addActionListener(inst);
 			exitPopup.setActionCommand("exitPopup");
 		}
-		
+
 		void updateText() {
 			int amount = 0;
 			for (Entry<Integer, Integer> icbms : ownedICBM.entrySet()) {
 				amount = amount + icbms.getValue();
 			}
 			icbmsText.setText(NumberFormat.getInstance().format(amount));
-			
+
 			deadText.setText(NumberFormat.getInstance().format(killed));
-			
+
 			aliveText.setText(NumberFormat.getInstance().format(alive - killed));
-			
+
 			moneyText.setText(NumberFormat.getInstance().format(money) + "K");
 		}
 
 		public void clickCapital(Capital c) {
 			removeClickElements();
 			addCapitalsAsLabels();
-			
+
 			capitalSelected = c;
-			
+
 			popup = new JPanel();
 			panel.add(popup);
 			panel.setComponentZOrder(popup, 0);
 			popup.setBounds(64, 36, 896, 504);
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-			
+
 			popup.add(exitPopup);
 			exitPopup.setBounds(832, 30, 34, 34);
-			
+
 			JLabel title = new JLabel("You will ICBM " + c.getName());
 			popup.add(title);
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
-			
+
 			population = new JLabel("Population: " + NumberFormat.getInstance().format(c.getPopulation()));
 			popup.add(population);
 			population.setFont(new Font("Arial", Font.PLAIN, 18));
 			population.setBounds(30, 64, 500, 20);
-			
+
 			icbmLayout = initializeImageLabel("icbmlayout", true);
 			popup.add(icbmLayout);
 			icbmLayout.setBounds(11, 123, 874, 370);
-			
+
 			for (int i = 0; i < 5; i++) {
 				ICBM icbm = icbms[i];
 				int x = 15 + (i * 177);
-				
+
 				JLabel strike = new JLabel(calcStrike(c.getPopulation(), icbm.getpercentageStrike()) + "%");
 				icbmLayout.add(strike);
 				strike.setBounds(x, 192, 50, 20);
@@ -627,114 +629,115 @@ public class ICBMTycoon implements ActionListener {
 				launchButton.setActionCommand("strike:" + i);
 			}
 		}
-		
+
 		public void removePopup() {
 			panel.remove(popup);
+			popup = null;
 			removeClickElements();
 			addClickElements();
 			frame.repaint();
 		}
-		
+
 		public void clickICBMs() {
 			removeClickElements();
 			addCapitalsAsLabels();
-			
+
 			popup = new JPanel();
 			panel.add(popup);
 			panel.setComponentZOrder(popup, 0);
 			popup.setBounds(297, 228, 430, 120);
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-			
+
 			popup.add(exitPopup);
 			exitPopup.setBounds(366, 30, 34, 34);
-			
+
 			JLabel title = new JLabel("ICBMs owned:");
 			popup.add(title);
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
-			
+
 			JLabel icbms = new JLabel(icbmsText.getText());
 			popup.add(icbms);
 			icbms.setFont(new Font("Arial", Font.PLAIN, 18));
 			icbms.setBounds(30, 64, 500, 20);
 		}
-		
+
 		public void clickDead() {
 			removeClickElements();
 			addCapitalsAsLabels();
-			
+
 			popup = new JPanel();
 			panel.add(popup);
 			panel.setComponentZOrder(popup, 0);
 			popup.setBounds(297, 228, 430, 120);
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-			
+
 			popup.add(exitPopup);
 			exitPopup.setBounds(366, 30, 34, 34);
-			
+
 			JLabel title = new JLabel("People killed:");
 			popup.add(title);
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
-			
+
 			JLabel dead = new JLabel(deadText.getText());
 			popup.add(dead);
 			dead.setFont(new Font("Arial", Font.PLAIN, 18));
 			dead.setBounds(30, 64, 500, 20);
 		}
-		
+
 		public void clickAlive() {
 			removeClickElements();
 			addCapitalsAsLabels();
-			
+
 			popup = new JPanel();
 			panel.add(popup);
 			panel.setComponentZOrder(popup, 0);
 			popup.setBounds(297, 228, 430, 120);
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-			
+
 			popup.add(exitPopup);
 			exitPopup.setBounds(366, 30, 34, 34);
-			
+
 			JLabel title = new JLabel("People alive:");
 			popup.add(title);
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
-			
+
 			JLabel alive = new JLabel(aliveText.getText());
 			popup.add(alive);
 			alive.setFont(new Font("Arial", Font.PLAIN, 18));
 			alive.setBounds(30, 64, 500, 20);
 		}
-		
+
 		public void clickMoney() {
 			removeClickElements();
 			addCapitalsAsLabels();
-			
+
 			popup = new JPanel();
 			panel.add(popup);
 			panel.setComponentZOrder(popup, 0);
 			popup.setBounds(297, 228, 430, 120);
 			popup.setLayout(null);
 			popup.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-			
+
 			popup.add(exitPopup);
 			exitPopup.setBounds(366, 30, 34, 34);
-			
+
 			JLabel title = new JLabel("Money owned:");
 			popup.add(title);
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setBounds(30, 30, 500, 34);
-			
+
 			JLabel money = new JLabel("$" + moneyText.getText());
 			popup.add(money);
 			money.setFont(new Font("Arial", Font.PLAIN, 18));
 			money.setBounds(30, 64, 500, 20);
 		}
-		
+
 		void addClickElements() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
@@ -751,7 +754,7 @@ public class ICBMTycoon implements ActionListener {
 			usMap.add(clickAlive);
 			usMap.add(clickMoney);
 		}
-		
+
 		void addCapitalsAsLabels() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
@@ -762,7 +765,7 @@ public class ICBMTycoon implements ActionListener {
 				capitalPosition(capitalElements[i], c.getX(), c.getY());
 			}
 		}
-		
+
 		void removeClickElements() {
 			for (Component capital : capitalElements) {
 				usMap.remove(capital);
@@ -772,10 +775,11 @@ public class ICBMTycoon implements ActionListener {
 			usMap.remove(clickAlive);
 			usMap.remove(clickMoney);
 		}
-		
+
 		public void strike(int icbmClicked) {
+			noExit = true;
 			ICBM icbm = icbms[icbmClicked];
-			
+
 			popup.remove(exitPopup);
 			popup.remove(icbmLayout);
 			popup.remove(population);
@@ -840,6 +844,7 @@ public class ICBMTycoon implements ActionListener {
 							capitalsICBM.add(capitalSelected);
 							new Timer().schedule(new TimerTask() {
 								public void run() {
+									noExit = false;
 									removePopup();
 								}
 							}, 4500);
@@ -848,16 +853,16 @@ public class ICBMTycoon implements ActionListener {
 				}
 			}, 5000);
 		}
-		
+
 		public void clickICBM() {
 			icbmClicks++;
 		}
-		
+
 		@Override
 		public void remove() {
 			panel.remove(usMap);
 		}
-		
+
 	}
-	
+
 }
