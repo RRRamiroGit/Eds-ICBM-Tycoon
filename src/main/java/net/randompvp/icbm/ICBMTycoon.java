@@ -564,21 +564,21 @@ public class ICBMTycoon implements ActionListener {
 
 			addClickElements();
 
-			clickicbms.setBounds(2, 1, 122, 74);
+			clickicbms.setBounds(2, 1, 122, 36);
 			clickicbms.setOpaque(false);
 			clickicbms.setContentAreaFilled(false);
 			clickicbms.setBorderPainted(false);
 			clickicbms.addActionListener(inst);
 			clickicbms.setActionCommand("clickICBMs");
 
-			clickDead.setBounds(138, 1, 167, 74);
+			clickDead.setBounds(138, 1, 167, 36);
 			clickDead.setOpaque(false);
 			clickDead.setContentAreaFilled(false);
 			clickDead.setBorderPainted(false);
 			clickDead.addActionListener(inst);
 			clickDead.setActionCommand("clickDead");
 
-			clickAlive.setBounds(323, 1, 247, 74);
+			clickAlive.setBounds(323, 1, 247, 36);
 			clickAlive.setOpaque(false);
 			clickAlive.setContentAreaFilled(false);
 			clickAlive.setBorderPainted(false);
