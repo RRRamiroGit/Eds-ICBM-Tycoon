@@ -58,6 +58,7 @@ public class ICBMTycoon implements ActionListener {
 	int money = 5000; // starting
 	int misses = 0;
 	boolean activityStarted = false;
+	Timer interceptActivity;
 
 	public ICBMTycoon() {
 		inst = this;
@@ -139,7 +140,8 @@ public class ICBMTycoon implements ActionListener {
 	}
 
 	void runUSInbound() {
-		new Timer().schedule(new TimerTask() {
+		interceptActivity = new Timer();
+		interceptActivity.schedule(new TimerTask() {
 			public void run() {
 				if (screen instanceof GameMap) {
 					((GameMap) screen).interceptActivity();
