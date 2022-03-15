@@ -135,6 +135,17 @@ public class ICBMTycoon implements ActionListener {
 		}
 	}
 
+	void runUSInbound() {
+		new Timer().schedule(new TimerTask() {
+			public void run() {
+				if (screen instanceof GameMap) {
+					((GameMap) screen).interceptActivity();
+				}
+				runUSInbound();
+			}
+		}, new Random().nextInt(5000) + 15000);
+	}
+
 	void changeScreen(Page newScreen) {
 		if (screen != null) // If there is a screen then remove it first
 			screen.remove();
@@ -487,7 +498,8 @@ public class ICBMTycoon implements ActionListener {
 
 	class GameMap extends Page {
 		JLabel usMap = initializeImageLabel("map", true);
-		Component[] capitalElements = new Component[20];
+		JButton[] capitalElementsButton = new JButton[20];
+		JLabel[] capitalElementsLabel = new JLabel[20];
 		JLabel icbmsText = new JLabel(), deadText = new JLabel(), aliveText = new JLabel(), moneyText = new JLabel();
 		JButton clickicbms = new JButton(), clickDead = new JButton(), clickAlive = new JButton(), clickMoney = new JButton();
 
@@ -497,6 +509,7 @@ public class ICBMTycoon implements ActionListener {
 		Capital capitalSelected;
 		JLabel icbmLayout;
 		JLabel population;
+		boolean noExit = false;
 
 		int icbmClicks = 0;
 
@@ -526,6 +539,20 @@ public class ICBMTycoon implements ActionListener {
 			moneyText.setForeground(Color.GREEN);
 
 			updateText();
+			
+			for (int i = 0; i < capitalsForGame.length; i++) {
+				Capital c = capitalsForGame[i];
+				capitalElementsButton[i] = initializeImageButton("dot", true);
+				capitalPosition(capitalElementsButton[i], c.getX(), c.getY());
+				((JButton) capitalElementsButton[i]).addActionListener(inst);
+				((JButton) capitalElementsButton[i]).setActionCommand("capital:" + i);
+			}
+			
+			for (int i = 0; i < capitalsForGame.length; i++) {
+				Capital c = capitalsForGame[i];
+				capitalElementsLabel[i] = initializeImageLabel("dot", true);
+				capitalPosition(capitalElementsLabel[i], c.getX(), c.getY());
+			}
 
 			addClickElements();
 
@@ -579,7 +606,6 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		public void clickCapital(Capital c) {
-			removeClickElements();
 			addCapitalsAsLabels();
 
 			capitalSelected = c;
@@ -639,7 +665,6 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		public void clickICBMs() {
-			removeClickElements();
 			addCapitalsAsLabels();
 
 			popup = new JPanel();
@@ -689,7 +714,6 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		public void clickAlive() {
-			removeClickElements();
 			addCapitalsAsLabels();
 
 			popup = new JPanel();
@@ -714,7 +738,6 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		public void clickMoney() {
-			removeClickElements();
 			addCapitalsAsLabels();
 
 			popup = new JPanel();
@@ -738,16 +761,35 @@ public class ICBMTycoon implements ActionListener {
 			money.setBounds(30, 64, 500, 20);
 		}
 
+		public void interceptActivity() {
+			if (noExit)
+				return;
+			if (popup != null)
+				removePopup();
+			addCapitalsAsLabels();
+			usMap.repaint();
+			JButton interceptButton = new JButton("INTERCEPT");
+			usMap.add(interceptButton);
+			interceptButton.setFont(new Font("Arial", Font.PLAIN, 28));
+			interceptButton.setMargin(new Insets(0, 0, 0, 0));
+			interceptButton.setBackground(new Color(156, 0, 3));
+			interceptButton.setBounds(20 + new Random().nextInt(814), 526, 170, 30);
+			new Timer().schedule(new TimerTask() {
+				public void run() {
+					usMap.remove(interceptButton);
+					removeClickElements();
+					addClickElements();
+					usMap.repaint();
+				}
+			}, 2000);
+		}
+
 		void addClickElements() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
 				if (capitalsICBM.contains(c))
 					continue;
-				capitalElements[i] = initializeImageButton("dot", true);
-				usMap.add(capitalElements[i]);
-				capitalPosition(capitalElements[i], c.getX(), c.getY());
-				((JButton) capitalElements[i]).addActionListener(inst);
-				((JButton) capitalElements[i]).setActionCommand("capital:" + i);
+				usMap.add(capitalElementsButton[i]);
 			}
 			usMap.add(clickicbms);
 			usMap.add(clickDead);
@@ -756,24 +798,27 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		void addCapitalsAsLabels() {
+			removeClickElements();
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
 				if (capitalsICBM.contains(c))
 					continue;
-				capitalElements[i] = initializeImageLabel("dot", true);
-				usMap.add(capitalElements[i]);
-				capitalPosition(capitalElements[i], c.getX(), c.getY());
+				usMap.add(capitalElementsLabel[i]);
 			}
 		}
 
 		void removeClickElements() {
-			for (Component capital : capitalElements) {
+			for (JButton capital : capitalElementsButton) {
+				usMap.remove(capital);
+			}
+			for (JLabel capital : capitalElementsLabel) {
 				usMap.remove(capital);
 			}
 			usMap.remove(clickicbms);
 			usMap.remove(clickDead);
 			usMap.remove(clickAlive);
 			usMap.remove(clickMoney);
+			usMap.repaint();
 		}
 
 		public void strike(int icbmClicked) {
