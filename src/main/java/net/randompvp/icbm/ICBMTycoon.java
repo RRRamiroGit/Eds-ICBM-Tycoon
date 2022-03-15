@@ -41,7 +41,9 @@ public class ICBMTycoon implements ActionListener {
 	// Window dimensions
 	final int windowHeight = 576;
 	final int windowWidth = 1024;
-
+	
+	Random random = new Random();
+	
 	JFrame frame;
 	JPanel panel;
 	Page screen;
@@ -95,7 +97,6 @@ public class ICBMTycoon implements ActionListener {
 
 				// randomize 20 capitals and put them in a new list
 				List<Capital> temp = new ArrayList<Capital>(Arrays.asList(capitals));
-				Random random = new Random();
 				for (int i = 0; i < 20; i++) {
 					int randomNum = random.nextInt(temp.size()); // generate a random number using temporary variable
 					capitalsForGame[i] = temp.get(randomNum);
@@ -143,7 +144,7 @@ public class ICBMTycoon implements ActionListener {
 				}
 				runUSInbound();
 			}
-		}, new Random().nextInt(5000) + 15000);
+		}, random.nextInt(5000) + 15000);
 	}
 
 	void changeScreen(Page newScreen) {
@@ -773,7 +774,7 @@ public class ICBMTycoon implements ActionListener {
 			interceptButton.setFont(new Font("Arial", Font.PLAIN, 28));
 			interceptButton.setMargin(new Insets(0, 0, 0, 0));
 			interceptButton.setBackground(new Color(156, 0, 3));
-			interceptButton.setBounds(20 + new Random().nextInt(814), 526, 170, 30);
+			interceptButton.setBounds(20 + random.nextInt(814), 526, 170, 30);
 			new Timer().schedule(new TimerTask() {
 				public void run() {
 					usMap.remove(interceptButton);
@@ -867,8 +868,8 @@ public class ICBMTycoon implements ActionListener {
 							popup.remove(icbmLaunching);
 							int chance = calcStrike(capitalSelected.getPopulation(), icbm.percentageStrike);
 							chance = chance + (icbmClicks / 16);
-							if (new Random().nextInt(100) < chance) { // ICBM hit
-								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationHigh() - (new Random().nextDouble() * (icbm.getPopulationHigh() - icbm.getPopulationLow() - (((double) icbm.getPopulationHigh() - (double) icbm.getPopulationLow()) / 100 * icbmClicks)))));
+							if (random.nextInt(100) < chance) { // ICBM hit
+								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationHigh() - (random.nextDouble() * (icbm.getPopulationHigh() - icbm.getPopulationLow() - (((double) icbm.getPopulationHigh() - (double) icbm.getPopulationLow()) / 100 * icbmClicks)))));
 								killed = killed + people;
 								JLabel hit = new JLabel("Congrats! Your " + icbm.getName() + " hit " + capitalSelected.getName() + " and killed " + NumberFormat.getInstance().format(people) + " people!");
 								popup.add(hit);
