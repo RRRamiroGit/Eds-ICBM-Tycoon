@@ -912,9 +912,7 @@ public class ICBMTycoon implements ActionListener {
 					new Timer().schedule(new TimerTask() {
 						public void run() {
 							popup.remove(icbmLaunching);
-							int chance = calcStrike(capitalSelected.getPopulation(), icbm.percentageStrike);
-							chance = chance + (icbmClicks / 16);
-							if (random.nextInt(100) < chance) { // ICBM hit
+							if (random.nextInt(100) < calcStrike(capitalSelected.getPopulation(), icbm.percentageStrike) + (icbmClicks / 16)) { // ICBM hit
 								int people = (int) Math.round(capitalSelected.getPopulation() / 100 * (icbm.getPopulationHigh() - (random.nextDouble() * (icbm.getPopulationHigh() - icbm.getPopulationLow() - (((double) icbm.getPopulationHigh() - (double) icbm.getPopulationLow()) / 100 * icbmClicks)))));
 								killed = killed + people;
 								JLabel hit = new JLabel("Congrats! Your " + icbm.getName() + " hit " + capitalSelected.getName() + " and killed " + NumberFormat.getInstance().format(people) + " people!");
