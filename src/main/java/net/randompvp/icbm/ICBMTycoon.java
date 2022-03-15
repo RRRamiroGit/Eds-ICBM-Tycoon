@@ -807,7 +807,7 @@ public class ICBMTycoon implements ActionListener {
 						}
 					}, 2500);
 				}
-			}, 2000);
+			}, 2600);
 		}
 		
 		public void clickIntercept() {
