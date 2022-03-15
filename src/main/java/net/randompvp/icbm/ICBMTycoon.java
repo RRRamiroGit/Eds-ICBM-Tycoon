@@ -41,9 +41,9 @@ public class ICBMTycoon implements ActionListener {
 	// Window dimensions
 	final int windowHeight = 576;
 	final int windowWidth = 1024;
-	
+
 	Random random = new Random();
-	
+
 	JFrame frame;
 	JPanel panel;
 	Page screen;
@@ -57,6 +57,7 @@ public class ICBMTycoon implements ActionListener {
 	int alive = 0;
 	int money = 5000; // starting
 	int misses = 0;
+	boolean activityStarted = false;
 
 	public ICBMTycoon() {
 		inst = this;
@@ -111,8 +112,6 @@ public class ICBMTycoon implements ActionListener {
 				for (Capital capitals : capitalsForGame) {
 					alive = alive + capitals.getPopulation();
 				}
-
-				runUSInbound();
 
 				changeScreen(new GameMap());
 			}
@@ -516,7 +515,7 @@ public class ICBMTycoon implements ActionListener {
 		boolean noExit = false;
 
 		int icbmClicks = 0;
-		
+
 		Timer interceptTimer;
 		JButton interceptButton = new JButton("INTERCEPT");
 		JLabel interceptText = new JLabel("US ICBM inbound, click the red button on screen to intercept");
@@ -547,7 +546,7 @@ public class ICBMTycoon implements ActionListener {
 			moneyText.setForeground(Color.GREEN);
 
 			updateText();
-			
+
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
 				capitalElementsButton[i] = initializeImageButton("dot", true);
@@ -555,7 +554,7 @@ public class ICBMTycoon implements ActionListener {
 				((JButton) capitalElementsButton[i]).addActionListener(inst);
 				((JButton) capitalElementsButton[i]).setActionCommand("capital:" + i);
 			}
-			
+
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
 				capitalElementsLabel[i] = initializeImageLabel("dot", true);
@@ -597,14 +596,14 @@ public class ICBMTycoon implements ActionListener {
 			exitPopup.setMargin(new Insets(0, 0, 0, 0));
 			exitPopup.addActionListener(inst);
 			exitPopup.setActionCommand("exitPopup");
-			
+
 			interceptButton.setFont(new Font("Arial", Font.PLAIN, 28));
 			interceptButton.setMargin(new Insets(0, 0, 0, 0));
 			interceptButton.setBackground(new Color(156, 0, 3));
 			interceptButton.setBounds(20 + random.nextInt(814), 526, 170, 30);
 			interceptButton.addActionListener(inst);
 			interceptButton.setActionCommand("interceptICBM");
-			
+
 			interceptText.setFont(new Font("Arial", Font.BOLD, 22));
 			interceptText.setBounds(230, 50, 710, 26);
 		}
@@ -809,7 +808,7 @@ public class ICBMTycoon implements ActionListener {
 				}
 			}, 2600);
 		}
-		
+
 		public void clickIntercept() {
 			interceptTimer.cancel();
 			usMap.remove(interceptButton);
@@ -939,6 +938,10 @@ public class ICBMTycoon implements ActionListener {
 								public void run() {
 									noExit = false;
 									removePopup();
+									if (!activityStarted) {
+										activityStarted = true;
+										runUSInbound();
+									}
 								}
 							}, 4500);
 						}
