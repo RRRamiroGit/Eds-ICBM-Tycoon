@@ -17,6 +17,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -47,6 +48,7 @@ public class ICBMTycoon implements ActionListener {
 	String name;
 	final Capital[] capitals = { new Capital(217, 120, 480000, "Olympia"), new Capital(201, 157, 168000, "Salem"), new Capital(187, 274, 516000, "Sacramento"), new Capital(226, 270, 54000, "Carson City"), new Capital(303, 195, 240000, "Boise"), new Capital(368, 134, 32091, "Helena"), new Capital(433, 216, 57000, "Cheyenne"), new Capital(335, 252, 204000, "Salt Lake City"), new Capital(326, 385, 1597000, "Phoenix"), new Capital(448, 258, 722000, "Denver"), new Capital(405, 348, 84000, "Santa Fe"), new Capital(542, 456, 948000, "Austin"), new Capital(546, 336, 666000, "Oklahoma City"), new Capital(558, 272, 123000, "Topeka"), new Capital(546, 243, 287000, "Lincoln"), new Capital(514, 180, 14091, "Pierre"), new Capital(511, 129, 69000, "Bismarck"), new Capital(597, 171, 312000, "St. Paul"), new Capital(612, 225, 213000, "Des Moines"), new Capital(618, 282, 42000, "Jefferson City"), new Capital(620, 355, 206000, "Little Rock"), new Capital(629, 447, 223000, "Baton Rouge"), new Capital(649, 419, 159000, "Jackson"), new Capital(711, 333, 695000, "Nashville"), new Capital(730, 305, 28602, "Frankfort"), new Capital(667, 271, 107000, "Springfield"), new Capital(669, 189, 262000, "Madison"), new Capital(732, 202, 106000, "Lansing"), new Capital(706, 268, 893000, "Indianapolis"), new Capital(759, 254, 910000, "Columbus"), new Capital(774, 291, 41000, "Charleston"), new Capital(706, 415, 199000, "Montgomery"), new Capital(741, 448, 201000, "Tallahassee"), new Capital(748, 386, 503000, "Atlanta"), new Capital(789, 380, 142000, "Columbia"), new Capital(831, 336, 474000, "Raleigh"), new Capital(846, 314, 230000, "Richmond"), new Capital(846, 279, 46000, "Annapolis"), new Capital(840, 284, 692683, "Washington D.C."), new Capital(867, 279, 36000, "Dover"), new Capital(825, 245, 46000, "Harrisburg"), new Capital(866, 200, 103000, "Albany"), new Capital(876, 256, 96000, "Trenton"), new Capital(898, 226, 116000, "Hartford"), new Capital(914, 226, 203000, "Providence"), new Capital(921, 212, 617000, "Boston"), new Capital(894, 165, 8074, "Montpelier"), new Capital(907, 190, 48000, "Concord"), new Capital(936, 164, 188999, "Augusta"), new Capital(795, 551, 854, "Mummy Town") };
 	Capital[] capitalsForGame = new Capital[20];
+	HashSet<Capital> capitalsICBM = new HashSet<Capital>();
 	final ICBM[] icbms = { new ICBM(500, 70, 25, 30, "IRBM"), new ICBM(750, 65, 40, 50, "Standard ICBM"), new ICBM(900, 95, 35, 40, "Trident II"), new ICBM(1000, 70, 55, 70, "Sarmat"), new ICBM(1250, 55, 70, 95, "TSAR ICBM") };
 	HashMap<Integer, Integer> ownedICBM = new HashMap<Integer, Integer>();
 	int killed = 0;
@@ -736,6 +738,8 @@ public class ICBMTycoon implements ActionListener {
 		void addClickElements() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
+				if (capitalsICBM.contains(c))
+					continue;
 				capitalElements[i] = initializeImageButton("dot", true);
 				usMap.add(capitalElements[i]);
 				capitalPosition(capitalElements[i], c.getX(), c.getY());
@@ -751,6 +755,8 @@ public class ICBMTycoon implements ActionListener {
 		void addCapitalsAsLabels() {
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
+				if (capitalsICBM.contains(c))
+					continue;
 				capitalElements[i] = initializeImageLabel("dot", true);
 				usMap.add(capitalElements[i]);
 				capitalPosition(capitalElements[i], c.getX(), c.getY());
@@ -831,6 +837,7 @@ public class ICBMTycoon implements ActionListener {
 							}
 							icbmClicks = 0;
 							updateText();
+							capitalsICBM.add(capitalSelected);
 							new Timer().schedule(new TimerTask() {
 								public void run() {
 									removePopup();
