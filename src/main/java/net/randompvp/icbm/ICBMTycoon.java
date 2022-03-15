@@ -136,6 +136,16 @@ public class ICBMTycoon implements ActionListener {
 			((GameMap) screen).clickICBM();
 		} else if (com.equals("interceptICBM")) {
 			((GameMap) screen).clickIntercept();
+		} else if (com.equals("returnToMenu")) {
+			capitalsForGame = new Capital[20];
+			capitalsICBM = new HashSet<Capital>();
+			ownedICBM = new HashMap<Integer, Integer>();
+			killed = 0;
+			alive = 0;
+			money = 5000;
+			misses = 0;
+			activityStarted = false;
+			changeScreen(new Welcome());
 		}
 	}
 
@@ -149,6 +159,11 @@ public class ICBMTycoon implements ActionListener {
 				runUSInbound();
 			}
 		}, random.nextInt(5000) + 15000);
+	}
+
+	void endGame(boolean won) {
+		interceptActivity.cancel();
+		changeScreen(new End(won));
 	}
 
 	void changeScreen(Page newScreen) {
@@ -521,6 +536,7 @@ public class ICBMTycoon implements ActionListener {
 		Timer interceptTimer;
 		JButton interceptButton = new JButton("INTERCEPT");
 		JLabel interceptText = new JLabel("US ICBM inbound, click the red button on screen to intercept");
+		boolean run = false;
 
 		public GameMap() {
 			panel.add(usMap);
@@ -791,12 +807,19 @@ public class ICBMTycoon implements ActionListener {
 			interceptTimer = new Timer();
 			interceptTimer.schedule(new TimerTask() {
 				public void run() {
-					misses++;
+					if (run)
+						return;
+					run = true;
 					usMap.remove(interceptButton);
 					usMap.remove(interceptText);
 					removeClickElements();
 					addClickElements();
-					JLabel missText = new JLabel("You didn't intercept the ICBM! (" + misses + " misses)");
+					misses++;
+					if (misses == 5) {
+						endGame(false);
+						return;
+					}
+					JLabel missText = new JLabel("You didn't intercept the ICBM! (" + misses + " miss" + (misses > 1 ? "es" : "") + ")");
 					usMap.add(missText);
 					missText.setFont(new Font("Arial", Font.BOLD, 22));
 					missText.setForeground(Color.RED);
@@ -804,6 +827,7 @@ public class ICBMTycoon implements ActionListener {
 					new Timer().schedule(new TimerTask() {
 						public void run() {
 							usMap.remove(missText);
+							run = false;
 							usMap.repaint();
 						}
 					}, 2500);
@@ -812,6 +836,9 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		public void clickIntercept() {
+			if (run)
+				return;
+			run = true;
 			interceptTimer.cancel();
 			usMap.remove(interceptButton);
 			usMap.remove(interceptText);
@@ -828,6 +855,7 @@ public class ICBMTycoon implements ActionListener {
 			new Timer().schedule(new TimerTask() {
 				public void run() {
 					usMap.remove(hitText);
+					run = false;
 					usMap.repaint();
 				}
 			}, 2500);
@@ -942,6 +970,9 @@ public class ICBMTycoon implements ActionListener {
 										activityStarted = true;
 										runUSInbound();
 									}
+									if (capitalsICBM.size() == 20) {
+										endGame(true);
+									}
 								}
 							}, 4500);
 						}
@@ -957,6 +988,46 @@ public class ICBMTycoon implements ActionListener {
 		@Override
 		public void remove() {
 			panel.remove(usMap);
+		}
+
+	}
+
+	class End extends Page {
+		JLabel title = new JLabel();
+		JButton returnToMenu = new JButton("Click to return to main menu");
+		JButton addLeaderboard = new JButton("Add your score to leaderboard!");
+
+		public End(boolean won) {
+			panel.add(title);
+			title.setBounds(0, 30, windowWidth, 32);
+			title.setFont(new Font("Arial", Font.PLAIN, 28));
+			title.setHorizontalAlignment(SwingConstants.CENTER);
+			if (won) {
+				title.setText("Congratulations! You successfully ICBM'd all the US Capitals!");
+			} else {
+				title.setText("Unfortunately, 5 ICBMs hit Russia and you died.");
+			}
+
+			panel.add(returnToMenu);
+			returnToMenu.setBounds(cenElement(282), 70, 282, 30);
+			returnToMenu.setFont(new Font("Arial", Font.PLAIN, 18));
+			returnToMenu.addActionListener(inst);
+			returnToMenu.setActionCommand("returnToMenu");
+
+			if (won) {
+				panel.add(addLeaderboard);
+				addLeaderboard.setBounds(cenElement(282), 120, 282, 30);
+				addLeaderboard.setFont(new Font("Arial", Font.PLAIN, 18));
+				addLeaderboard.addActionListener(inst);
+				addLeaderboard.setActionCommand("addToLeaderboard");
+			}
+		}
+
+		@Override
+		public void remove() {
+			panel.remove(title);
+			panel.remove(returnToMenu);
+			panel.remove(addLeaderboard);
 		}
 
 	}
