@@ -169,7 +169,7 @@ public class ICBMTycoon implements ActionListener {
 				}
 				runUSInbound();
 			}
-		}, random.nextInt(5000) + 13000);
+		}, random.nextInt(4000) + 12000);
 	}
 
 	void endGame(boolean won) {
@@ -868,7 +868,7 @@ public class ICBMTycoon implements ActionListener {
 			usMap.remove(interceptText);
 			removeClickElements();
 			addClickElements();
-			int moneyGained = (random.nextInt(21) * 10) + 500;
+			int moneyGained = (random.nextInt(23) * 10) + 510;
 			money = money + moneyGained;
 			updateText();
 			JLabel hitText = new JLabel("You intercepted the ICBM! (+$" + moneyGained + "K)");
