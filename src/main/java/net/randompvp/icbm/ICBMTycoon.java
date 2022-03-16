@@ -701,12 +701,17 @@ public class ICBMTycoon implements ActionListener {
 				JLabel populationNums = new JLabel("(" + NumberFormat.getInstance().format(percentOfPop(icbm.getPopulationLow(), c.getPopulation())) + "-" + NumberFormat.getInstance().format(percentOfPop(icbm.getPopulationHigh(), c.getPopulation())) + ")");
 				icbmLayout.add(populationNums);
 				populationNums.setBounds(x, 242, 160, 20);
-				JButton launchButton = new JButton("Strike!");
-				icbmLayout.add(launchButton);
-				launchButton.setFont(new Font("Arial", Font.PLAIN, 28));
-				launchButton.setBounds(x, 325, 136, 30);
-				launchButton.addActionListener(inst);
-				launchButton.setActionCommand("strike:" + i);
+				JLabel owned = new JLabel(String.valueOf(ownedICBM.get(i)));
+				icbmLayout.add(owned);
+				owned.setBounds(x, 280, 50, 20);
+				if (ownedICBM.get(i) > 0) {
+					JButton launchButton = new JButton("Strike!");
+					icbmLayout.add(launchButton);
+					launchButton.setFont(new Font("Arial", Font.PLAIN, 28));
+					launchButton.setBounds(x, 325, 136, 30);
+					launchButton.addActionListener(inst);
+					launchButton.setActionCommand("strike:" + i);
+				}
 			}
 		}
 
@@ -921,6 +926,8 @@ public class ICBMTycoon implements ActionListener {
 
 		public void strike(int icbmClicked) {
 			noExit = true;
+			ownedICBM.put(icbmClicked, ownedICBM.get(icbmClicked) - 1);
+			updateText();
 			ICBM icbm = icbms[icbmClicked];
 
 			popup.remove(exitPopup);
