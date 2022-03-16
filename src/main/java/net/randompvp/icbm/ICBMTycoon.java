@@ -136,6 +136,8 @@ public class ICBMTycoon implements ActionListener {
 			((GameMap) screen).clickICBM();
 		} else if (com.equals("interceptICBM")) {
 			((GameMap) screen).clickIntercept();
+		} else if (com.equals("clickShop")) {
+			changeScreen(new Shop());
 		} else if (com.equals("returnToMenu")) {
 			capitalsForGame = new Capital[20];
 			capitalsICBM = new HashSet<Capital>();
@@ -146,6 +148,15 @@ public class ICBMTycoon implements ActionListener {
 			misses = 0;
 			activityStarted = false;
 			changeScreen(new Welcome());
+		} else if (com.equals("backMap")) {
+			changeScreen(new GameMap());
+		} else if (com.startsWith("buyicbm:")) {
+			int icbm = Integer.parseInt(com.split(":")[1]);
+			if (money >= icbms[icbm].getPrice()) { // can buy
+				ownedICBM.put(icbm, ownedICBM.get(icbm) + 1);
+				money = money - icbms[icbm].getPrice();
+				((Shop) screen).updateText();
+			}
 		}
 	}
 
@@ -522,6 +533,7 @@ public class ICBMTycoon implements ActionListener {
 		JLabel[] capitalElementsLabel = new JLabel[20];
 		JLabel icbmsText = new JLabel(), deadText = new JLabel(), aliveText = new JLabel(), moneyText = new JLabel();
 		JButton clickicbms = new JButton(), clickDead = new JButton(), clickAlive = new JButton(), clickMoney = new JButton();
+		JButton shopButton = new JButton();
 
 		// popup
 		JPanel popup;
@@ -624,6 +636,13 @@ public class ICBMTycoon implements ActionListener {
 
 			interceptText.setFont(new Font("Arial", Font.BOLD, 22));
 			interceptText.setBounds(230, 50, 710, 26);
+
+			shopButton.setBounds(980, 38, 44, 538);
+			shopButton.setOpaque(false);
+			shopButton.setContentAreaFilled(false);
+			shopButton.setBorderPainted(false);
+			shopButton.addActionListener(inst);
+			shopButton.setActionCommand("clickShop");
 		}
 
 		void updateText() {
@@ -872,6 +891,7 @@ public class ICBMTycoon implements ActionListener {
 			usMap.add(clickDead);
 			usMap.add(clickAlive);
 			usMap.add(clickMoney);
+			usMap.add(shopButton);
 		}
 
 		void addCapitalsAsLabels() {
@@ -895,6 +915,7 @@ public class ICBMTycoon implements ActionListener {
 			usMap.remove(clickDead);
 			usMap.remove(clickAlive);
 			usMap.remove(clickMoney);
+			usMap.remove(shopButton);
 			usMap.repaint();
 		}
 
@@ -988,6 +1009,72 @@ public class ICBMTycoon implements ActionListener {
 		@Override
 		public void remove() {
 			panel.remove(usMap);
+		}
+
+	}
+
+	class Shop extends Page {
+		JLabel icbmShopLayout = initializeImageLabel("icbmshop", true);
+		JLabel moneyText = new JLabel();
+		JLabel[] icbmOwned = new JLabel[5];
+		JButton[] buyicbm = new JButton[5];
+		JButton backMap = new JButton("<");
+
+		public Shop() {
+			panel.add(icbmShopLayout);
+			icbmShopLayout.setBounds(0, 0, windowWidth, windowHeight);
+
+			icbmShopLayout.add(moneyText);
+			moneyText.setForeground(Color.GREEN);
+			moneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+			moneyText.setFont(new Font("Arial", Font.PLAIN, 36));
+			moneyText.setBounds(870, 5, 145, 40);
+
+			icbmShopLayout.add(backMap);
+			backMap.setFont(new Font("Arial", Font.PLAIN, 38));
+			backMap.setBounds(10, 10, 42, 42);
+			backMap.addActionListener(inst);
+			backMap.setActionCommand("backMap");
+			backMap.setMargin(new Insets(0, 0, 0, 0));
+
+			for (int i = 0; i < 5; i++) {
+				icbmOwned[i] = new JLabel();
+				icbmShopLayout.add(icbmOwned[i]);
+				icbmOwned[i].setBounds(85 + (202 * i), 482, 30, 12);
+			}
+
+			for (int i = 0; i < 5; i++) {
+				buyicbm[i] = new JButton();
+				icbmShopLayout.add(buyicbm[i]);
+				buyicbm[i].setFont(new Font("Arial", Font.BOLD, 14));
+				buyicbm[i].setMargin(new Insets(0, 0, 0, 0));
+				buyicbm[i].setBounds(32 + (202 * i), 502, 152, 42);
+				buyicbm[i].addActionListener(inst);
+				buyicbm[i].setActionCommand("buyicbm:" + i);
+			}
+
+			updateText();
+		}
+
+		public void updateText() {
+			moneyText.setText(NumberFormat.getInstance().format(money) + "K");
+			for (int i = 0; i < 5; i++) {
+				icbmOwned[i].setText(String.valueOf(ownedICBM.get(i)));
+			}
+			for (int i = 0; i < 5; i++) {
+				if (money >= icbms[i].getPrice()) {
+					buyicbm[i].setText("Buy");
+					buyicbm[i].setBackground(Color.GREEN);
+				} else {
+					buyicbm[i].setText("Not enough money");
+					buyicbm[i].setBackground(Color.RED);
+				}
+			}
+		}
+
+		@Override
+		public void remove() {
+			panel.remove(icbmShopLayout);
 		}
 
 	}
