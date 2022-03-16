@@ -98,6 +98,8 @@ public class ICBMTycoon implements ActionListener {
 			EnterName nameCl = (EnterName) screen;
 			if (nameCl.getName().equals("")) {
 				nameCl.emptyName();
+			} else if (nameCl.getName().contains(" ") || nameCl.getName().contains(";") || nameCl.getName().length() > 32) {
+				nameCl.invalidName();
 			} else {
 				name = nameCl.getName();
 
@@ -598,7 +600,7 @@ public class ICBMTycoon implements ActionListener {
 
 			panel.add(emptyName);
 			emptyName.setForeground(Color.RED);
-			emptyName.setBounds(682, 120, 180, 22);
+			emptyName.setBounds(682, 120, 380, 22);
 			emptyName.setVisible(false);
 
 			panel.add(continueNext);
@@ -609,11 +611,16 @@ public class ICBMTycoon implements ActionListener {
 		}
 
 		public String getName() {
-			return nameBox.getText();
+			return nameBox.getText().trim();
 		}
 
 		public void emptyName() {
 			emptyName.setVisible(true);
+		}
+
+		public void invalidName() {
+			emptyName.setVisible(true);
+			emptyName.setText("You can't have spaces, semicolons, must be under 32 chars");
 		}
 
 		@Override
