@@ -169,7 +169,7 @@ public class ICBMTycoon implements ActionListener {
 				}
 				runUSInbound();
 			}
-		}, random.nextInt(5000) + 15000);
+		}, random.nextInt(5000) + 13000);
 	}
 
 	void endGame(boolean won) {
