@@ -489,6 +489,7 @@ public class ICBMTycoon implements ActionListener {
 
 		@Override
 		public void remove() {
+			panel.remove(backWelcome);
 			for (int i = 0; i < scoresText.length; i++) {
 				panel.remove(scoresText[i]);
 			}
