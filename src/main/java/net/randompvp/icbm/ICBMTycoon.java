@@ -13,6 +13,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,6 +160,22 @@ public class ICBMTycoon implements ActionListener {
 				money = money - icbms[icbm].getPrice();
 				((Shop) screen).updateText();
 			}
+		} else if (com.equals("addToLeaderboard")) {
+			try {
+				DatagramSocket clientSocket = new DatagramSocket();
+				InetAddress IPAddress = InetAddress.getByName("172.111.34.33");
+				byte[] sendData = (name + " " + killed).getBytes("UTF-8");
+				byte[] receiveData = new byte[32];
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4226);
+				clientSocket.send(sendPacket);
+				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+				clientSocket.receive(receivePacket);
+				clientSocket.close();
+			} catch (Exception ex) {
+			}
+			((End) screen).sentScore();
+		} else if (com.equals("leaderboard")) {
+			changeScreen(new Leaderboard());
 		}
 	}
 
@@ -296,6 +315,7 @@ public class ICBMTycoon implements ActionListener {
 		JButton startButton = new JButton("Start!");
 		JButton exitButton = new JButton("Exit");
 		JButton creditButton = new JButton("Credit");
+		JButton leaderboardButton = new JButton("Leaderboard");
 		JLabel welcome = new JLabel("Welcome to Ed's ICBM Tycoon! Press the Start button to continue");
 		JLabel author = new JLabel("Developed by Ramiro");
 		JLabel author2 = new JLabel("Concept by Ed");
@@ -321,9 +341,16 @@ public class ICBMTycoon implements ActionListener {
 
 			icbmImage.add(creditButton);
 			creditButton.setFont(new Font("Arial", Font.PLAIN, 34));
-			creditButton.setBounds(cenElement(360), 305, 360, buttonHeight);
+			creditButton.setBounds(332, 305, buttonWidth, buttonHeight);
 			creditButton.addActionListener(inst);
 			creditButton.setActionCommand("credit");
+
+			icbmImage.add(leaderboardButton);
+			leaderboardButton.setFont(new Font("Arial", Font.PLAIN, 22));
+			leaderboardButton.setMargin(new Insets(0, 0, 0, 0));
+			leaderboardButton.setBounds(552, 305, buttonWidth, buttonHeight);
+			leaderboardButton.addActionListener(inst);
+			leaderboardButton.setActionCommand("leaderboard");
 
 			icbmImage.add(welcome);
 			welcome.setFont(new Font("Arial", Font.PLAIN, 28));
@@ -397,6 +424,76 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(text5);
 			panel.remove(text6);
 		}
+	}
+
+	class Leaderboard extends Page {
+		String leaderboard;
+		JLabel[] scoresText = new JLabel[20];
+		JButton backWelcome = new JButton("<");
+
+		public Leaderboard() {
+			try {
+				DatagramSocket clientSocket = new DatagramSocket();
+				InetAddress IPAddress = InetAddress.getByName("172.111.34.33");
+				byte[] sendData = ("getleaderboard").getBytes("UTF-8");
+				byte[] receiveData = new byte[4096];
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4226);
+				clientSocket.send(sendPacket);
+				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+				clientSocket.receive(receivePacket);
+				String sentence = new String(receivePacket.getData(), 0, receivePacket.getLength());
+				leaderboard = sentence;
+				clientSocket.close();
+			} catch (Exception ex) {
+			}
+
+			panel.add(backWelcome);
+			backWelcome.setFont(new Font("Arial", Font.PLAIN, 38));
+			backWelcome.setBounds(10, 10, 42, 42);
+			backWelcome.addActionListener(inst);
+			backWelcome.setActionCommand("backWelcome");
+			backWelcome.setMargin(new Insets(0, 0, 0, 0));
+
+			String[] scores = leaderboard.split(";");
+			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(scores));
+			ArrayList<String> sortedScores = new ArrayList<String>();
+			for (int i = 0; i < scores.length; i++) {
+				int highest = 0;
+				for (int j = 0; j < temp.size(); j++) {
+					int num = Integer.parseInt(temp.get(j).split(" ")[1]);
+					if (num > highest)
+						highest = num;
+				}
+				for (int j = 0; j < temp.size(); j++) {
+					int num = Integer.parseInt(temp.get(j).split(" ")[1]);
+					if (highest == num) {
+						sortedScores.add(temp.get(j));
+						temp.remove(j);
+						break;
+					}
+				}
+			}
+
+			for (int i = 0; i < scoresText.length; i++) {
+				scoresText[i] = new JLabel();
+				panel.add(scoresText[i]);
+				try {
+					String[] scoreText = sortedScores.get(i).split(" ");
+					scoresText[i].setText((i + 1) + ". " + scoreText[0] + ": " + NumberFormat.getInstance().format(Integer.parseInt(scoreText[1])));
+					scoresText[i].setFont(new Font("Arial", Font.PLAIN, 18));
+					scoresText[i].setBounds(10, 58 + (20 * i), 1014, 20);
+				} catch (IndexOutOfBoundsException ex) {
+				}
+			}
+		}
+
+		@Override
+		public void remove() {
+			for (int i = 0; i < scoresText.length; i++) {
+				panel.remove(scoresText[i]);
+			}
+		}
+
 	}
 
 	class Begin1 extends Page {
@@ -1088,8 +1185,10 @@ public class ICBMTycoon implements ActionListener {
 
 	class End extends Page {
 		JLabel title = new JLabel();
+		JLabel kills = new JLabel("You managed to get " + NumberFormat.getInstance().format(killed) + " people killed with ICBMs!");
 		JButton returnToMenu = new JButton("Click to return to main menu");
 		JButton addLeaderboard = new JButton("Add your score to leaderboard!");
+		JLabel sentLeaderboard = new JLabel("Sent your score!");
 
 		public End(boolean won) {
 			panel.add(title);
@@ -1097,31 +1196,48 @@ public class ICBMTycoon implements ActionListener {
 			title.setFont(new Font("Arial", Font.PLAIN, 28));
 			title.setHorizontalAlignment(SwingConstants.CENTER);
 			if (won) {
+				title.setForeground(Color.GREEN);
 				title.setText("Congratulations! You successfully ICBM'd all the US Capitals!");
 			} else {
+				title.setForeground(Color.RED);
 				title.setText("Unfortunately, 5 ICBMs hit Russia and you died.");
 			}
 
+			panel.add(kills);
+			kills.setBounds(0, 70, windowWidth, 32);
+			kills.setFont(new Font("Arial", Font.PLAIN, 22));
+			kills.setHorizontalAlignment(SwingConstants.CENTER);
+
 			panel.add(returnToMenu);
-			returnToMenu.setBounds(cenElement(282), 70, 282, 30);
+			returnToMenu.setBounds(cenElement(282), 110, 282, 30);
 			returnToMenu.setFont(new Font("Arial", Font.PLAIN, 18));
 			returnToMenu.addActionListener(inst);
 			returnToMenu.setActionCommand("returnToMenu");
 
 			if (won) {
 				panel.add(addLeaderboard);
-				addLeaderboard.setBounds(cenElement(282), 120, 282, 30);
+				addLeaderboard.setBounds(cenElement(282), 160, 282, 30);
 				addLeaderboard.setFont(new Font("Arial", Font.PLAIN, 18));
 				addLeaderboard.addActionListener(inst);
 				addLeaderboard.setActionCommand("addToLeaderboard");
 			}
 		}
 
+		public void sentScore() {
+			panel.remove(addLeaderboard);
+			panel.add(sentLeaderboard);
+			sentLeaderboard.setBounds(cenElement(282), 160, 282, 30);
+			sentLeaderboard.setFont(new Font("Arial", Font.PLAIN, 18));
+			sentLeaderboard.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
 		@Override
 		public void remove() {
 			panel.remove(title);
+			panel.remove(kills);
 			panel.remove(returnToMenu);
 			panel.remove(addLeaderboard);
+			panel.remove(sentLeaderboard);
 		}
 
 	}
