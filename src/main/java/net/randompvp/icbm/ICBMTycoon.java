@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -28,6 +29,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -62,6 +68,8 @@ public class ICBMTycoon implements ActionListener {
 	int misses = 0;
 	boolean activityStarted = false;
 	Timer interceptActivity;
+	Clip music;
+	boolean musicMuted = false;
 
 	public ICBMTycoon() {
 		inst = this;
@@ -76,6 +84,15 @@ public class ICBMTycoon implements ActionListener {
 		frame.setTitle("Ed's ICBM Tycoon"); // Set the title of the window
 		frame.setVisible(true);
 		frame.pack();
+		try {
+			music = AudioSystem.getClip();
+			music.open(AudioSystem.getAudioInputStream(new BufferedInputStream(getClass().getResourceAsStream("/menu.wav"))));
+			((FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN)).setValue(-45);
+			music.start();
+			music.loop(Integer.MAX_VALUE);
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException ex) {
+			ex.printStackTrace();
+		}
 		changeScreen(new Welcome()); // Make the welcome screen appear
 	}
 
@@ -178,6 +195,25 @@ public class ICBMTycoon implements ActionListener {
 			((End) screen).sentScore();
 		} else if (com.equals("leaderboard")) {
 			changeScreen(new Leaderboard());
+		} else if (com.equals("muteMusic")) {
+			music.stop();
+			musicMuted = true;
+			((Welcome) screen).updateMusic();
+		} else if (com.equals("unmuteMusic")) {
+			music.start();
+			musicMuted = false;
+			((Welcome) screen).updateMusic();
+		}
+	}
+
+	public void playAudio(String fileName, float volume) {
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(new BufferedInputStream(getClass().getResourceAsStream("/" + fileName + ".wav"))));
+			((FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN)).setValue(volume);
+			clip.start();
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException ex) {
+			ex.printStackTrace();
 		}
 	}
 
@@ -322,6 +358,8 @@ public class ICBMTycoon implements ActionListener {
 		JLabel author = new JLabel("Developed by Ramiro");
 		JLabel author2 = new JLabel("Concept by Ed");
 		JLabel icbmImage = initializeImageLabel("icbm", false);
+		JButton muteMusic = initializeImageButton("music", true);
+		JButton unmuteMusic = initializeImageButton("musicmute", true);
 
 		public Welcome() {
 			int buttonWidth = 140;
@@ -366,6 +404,34 @@ public class ICBMTycoon implements ActionListener {
 			icbmImage.add(author2);
 			author2.setBounds(cenElement(80), 102, 80, 14);
 			author2.setForeground(Color.WHITE);
+			
+			icbmImage.add(muteMusic);
+			muteMusic.setOpaque(false);
+			muteMusic.setContentAreaFilled(false);
+			muteMusic.setBorderPainted(false);
+			muteMusic.setBounds(10, 506, 60, 60);
+			muteMusic.addActionListener(inst);
+			muteMusic.setActionCommand("muteMusic");
+			
+			icbmImage.add(unmuteMusic);
+			unmuteMusic.setOpaque(false);
+			unmuteMusic.setContentAreaFilled(false);
+			unmuteMusic.setBorderPainted(false);
+			unmuteMusic.setBounds(10, 506, 60, 60);
+			unmuteMusic.addActionListener(inst);
+			unmuteMusic.setActionCommand("unmuteMusic");
+			
+			updateMusic();
+		}
+		
+		public void updateMusic() {
+			if (musicMuted) {
+				muteMusic.setVisible(false);
+				unmuteMusic.setVisible(true);
+			} else {
+				muteMusic.setVisible(true);
+				unmuteMusic.setVisible(false);
+			}
 		}
 
 		@Override
@@ -1084,6 +1150,7 @@ public class ICBMTycoon implements ActionListener {
 								hit.setHorizontalAlignment(SwingConstants.CENTER);
 								hit.setForeground(Color.GREEN);
 								hit.setFont(new Font("Arial", Font.PLAIN, 24));
+								playAudio("explosion", -18);
 							} else { // ICBM got intercepted
 								JLabel intercepted = new JLabel("Unfortunately, your " + icbm.getName() + " was intercepted");
 								popup.add(intercepted);
