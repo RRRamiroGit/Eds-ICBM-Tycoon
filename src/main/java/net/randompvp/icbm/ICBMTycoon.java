@@ -182,7 +182,7 @@ public class ICBMTycoon implements ActionListener {
 		} else if (com.equals("addToLeaderboard")) {
 			try {
 				DatagramSocket clientSocket = new DatagramSocket();
-				InetAddress IPAddress = InetAddress.getByName("172.111.34.33");
+				InetAddress IPAddress = InetAddress.getByName("play.randompvp.net");
 				byte[] sendData = (name + " " + killed).getBytes("UTF-8");
 				byte[] receiveData = new byte[32];
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4226);
@@ -508,7 +508,7 @@ public class ICBMTycoon implements ActionListener {
 		public Leaderboard() {
 			try {
 				DatagramSocket clientSocket = new DatagramSocket();
-				InetAddress IPAddress = InetAddress.getByName("172.111.34.33");
+				InetAddress IPAddress = InetAddress.getByName("play.randompvp.net");
 				byte[] sendData = ("getleaderboard").getBytes("UTF-8");
 				byte[] receiveData = new byte[4096];
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4226);
