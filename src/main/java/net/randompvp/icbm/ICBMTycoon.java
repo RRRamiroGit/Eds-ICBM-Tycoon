@@ -448,6 +448,7 @@ public class ICBMTycoon implements ActionListener {
 		JLabel text4 = new JLabel("Ideas by Ed Ruiz");
 		JLabel text5 = new JLabel("Welcome page image from Rodong Sinmun");
 		JLabel text6 = new JLabel("Capital population numbers from Wikipedia®");
+		JLabel text7 = new JLabel("Music made by NEFFEX from YouTube Audio Library");
 
 		public Credits() {
 			panel.add(backWelcome);
@@ -480,6 +481,10 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(text6);
 			text6.setFont(new Font("Arial", Font.PLAIN, 18));
 			text6.setBounds(10, 158, 600, 20);
+			
+			panel.add(text7);
+			text7.setFont(new Font("Arial", Font.PLAIN, 18));
+			text7.setBounds(10, 178, 600, 20);
 		}
 
 		@Override
@@ -491,6 +496,7 @@ public class ICBMTycoon implements ActionListener {
 			panel.remove(text4);
 			panel.remove(text5);
 			panel.remove(text6);
+			panel.remove(text7);
 		}
 	}
 
