@@ -669,6 +669,8 @@ public class ICBMTycoon implements ActionListener {
 
 			panel.add(nameBox);
 			nameBox.setBounds(cenElement(300), 120, 300, 22);
+			nameBox.addActionListener(inst);
+			nameBox.setActionCommand("beginName");
 
 			panel.add(emptyName);
 			emptyName.setForeground(Color.RED);
