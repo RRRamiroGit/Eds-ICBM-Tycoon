@@ -88,7 +88,7 @@ public class ICBMTycoon implements ActionListener {
 			music = AudioSystem.getClip();
 			music.open(AudioSystem.getAudioInputStream(new BufferedInputStream(getClass().getResourceAsStream("/menu.wav"))));
 			((FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN)).setValue(-45);
-			music.start();
+			music.start(); // start the background music and loop it
 			music.loop(Integer.MAX_VALUE);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException ex) {
 			ex.printStackTrace();
@@ -160,7 +160,7 @@ public class ICBMTycoon implements ActionListener {
 			((GameMap) screen).clickIntercept();
 		} else if (com.equals("clickShop")) {
 			changeScreen(new Shop());
-		} else if (com.equals("returnToMenu")) {
+		} else if (com.equals("returnToMenu")) { // reset values for all game aspects
 			capitalsForGame = new Capital[20];
 			capitalsICBM = new HashSet<Capital>();
 			ownedICBM = new HashMap<Integer, Integer>();
@@ -217,7 +217,7 @@ public class ICBMTycoon implements ActionListener {
 		}
 	}
 
-	void runUSInbound() {
+	void runUSInbound() { // make US send an ICBM the player has to intercept
 		interceptActivity = new Timer();
 		interceptActivity.schedule(new TimerTask() {
 			public void run() {
@@ -404,7 +404,7 @@ public class ICBMTycoon implements ActionListener {
 			icbmImage.add(author2);
 			author2.setBounds(cenElement(80), 102, 80, 14);
 			author2.setForeground(Color.WHITE);
-			
+
 			icbmImage.add(muteMusic);
 			muteMusic.setOpaque(false);
 			muteMusic.setContentAreaFilled(false);
@@ -412,7 +412,7 @@ public class ICBMTycoon implements ActionListener {
 			muteMusic.setBounds(10, 506, 60, 60);
 			muteMusic.addActionListener(inst);
 			muteMusic.setActionCommand("muteMusic");
-			
+
 			icbmImage.add(unmuteMusic);
 			unmuteMusic.setOpaque(false);
 			unmuteMusic.setContentAreaFilled(false);
@@ -420,11 +420,11 @@ public class ICBMTycoon implements ActionListener {
 			unmuteMusic.setBounds(10, 506, 60, 60);
 			unmuteMusic.addActionListener(inst);
 			unmuteMusic.setActionCommand("unmuteMusic");
-			
+
 			updateMusic();
 		}
-		
-		public void updateMusic() {
+
+		public void updateMusic() { // change the music button visual
 			if (musicMuted) {
 				muteMusic.setVisible(false);
 				unmuteMusic.setVisible(true);
@@ -481,7 +481,7 @@ public class ICBMTycoon implements ActionListener {
 			panel.add(text6);
 			text6.setFont(new Font("Arial", Font.PLAIN, 18));
 			text6.setBounds(10, 158, 600, 20);
-			
+
 			panel.add(text7);
 			text7.setFont(new Font("Arial", Font.PLAIN, 18));
 			text7.setBounds(10, 178, 600, 20);
@@ -727,7 +727,8 @@ public class ICBMTycoon implements ActionListener {
 		Timer interceptTimer;
 		JButton interceptButton = new JButton("INTERCEPT");
 		JLabel interceptText = new JLabel("US ICBM inbound, click the red button on screen to intercept");
-		boolean run = false;
+		boolean run = false; // we use this as the user can click the intercept button at the same time the
+								// timer runs out
 
 		public GameMap() {
 			panel.add(usMap);
@@ -824,7 +825,7 @@ public class ICBMTycoon implements ActionListener {
 			shopButton.setActionCommand("clickShop");
 		}
 
-		void updateText() {
+		void updateText() { // update all the numbers
 			int amount = 0;
 			for (Entry<Integer, Integer> icbms : ownedICBM.entrySet()) {
 				amount = amount + icbms.getValue();
@@ -894,7 +895,7 @@ public class ICBMTycoon implements ActionListener {
 			}
 		}
 
-		public void removePopup() {
+		public void removePopup() { // remove any popup that is on screen
 			panel.remove(popup);
 			popup = null;
 			removeClickElements();
@@ -1078,7 +1079,8 @@ public class ICBMTycoon implements ActionListener {
 			usMap.add(shopButton);
 		}
 
-		void addCapitalsAsLabels() {
+		void addCapitalsAsLabels() { // when there is a popup there can't be any buttons that the user is able to
+										// click on so we use labels
 			removeClickElements();
 			for (int i = 0; i < capitalsForGame.length; i++) {
 				Capital c = capitalsForGame[i];
@@ -1113,7 +1115,7 @@ public class ICBMTycoon implements ActionListener {
 			popup.remove(icbmLayout);
 			popup.remove(population);
 			popup.repaint();
-			JButton icbmClick = new JButton("CLICK!!");
+			JButton icbmClick = new JButton("CLICK!!"); // button that the user clicks to get a higher odds
 			popup.add(icbmClick);
 			icbmClick.setFont(new Font("Arial", Font.BOLD, 104));
 			icbmClick.setBounds(224, 126, 448, 252);
