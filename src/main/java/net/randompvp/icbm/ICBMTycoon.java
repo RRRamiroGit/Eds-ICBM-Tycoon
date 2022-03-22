@@ -553,7 +553,7 @@ public class ICBMTycoon implements ActionListener {
 				panel.add(scoresText[i]);
 				try {
 					String[] scoreText = sortedScores.get(i).split(" ");
-					scoresText[i].setText((i + 1) + ". " + scoreText[0] + ": " + NumberFormat.getInstance().format(Integer.parseInt(scoreText[1])));
+					scoresText[i].setText((i + 1) + ". " + scoreText[0] + ": " + NumberFormat.getInstance().format(Integer.parseInt(scoreText[1])) + " kills");
 					scoresText[i].setFont(new Font("Arial", Font.PLAIN, 18));
 					scoresText[i].setBounds(10, 58 + (20 * i), 1014, 20);
 				} catch (IndexOutOfBoundsException ex) {
