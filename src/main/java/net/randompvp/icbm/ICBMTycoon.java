@@ -720,6 +720,7 @@ public class ICBMTycoon implements ActionListener {
 		Capital capitalSelected;
 		JLabel icbmLayout;
 		JLabel population;
+		JLabel bigPopulation = new JLabel("This Capital has a very large population, make sure your ICBM hits! (Strike rates may have been lowered drastically)");
 		boolean noExit = false;
 
 		int icbmClicks = 0;
@@ -823,6 +824,9 @@ public class ICBMTycoon implements ActionListener {
 			shopButton.setBorderPainted(false);
 			shopButton.addActionListener(inst);
 			shopButton.setActionCommand("clickShop");
+
+			bigPopulation.setFont(new Font("Arial", Font.PLAIN, 16));
+			bigPopulation.setBounds(30, 88, 810, 18);
 		}
 
 		void updateText() { // update all the numbers
@@ -863,6 +867,10 @@ public class ICBMTycoon implements ActionListener {
 			popup.add(population);
 			population.setFont(new Font("Arial", Font.PLAIN, 18));
 			population.setBounds(30, 64, 500, 20);
+
+			if (c.getPopulation() > 700000) { // population is big, greater than 700,000
+				popup.add(bigPopulation);
+			}
 
 			icbmLayout = initializeImageLabel("icbmlayout", true);
 			popup.add(icbmLayout);
@@ -1114,6 +1122,7 @@ public class ICBMTycoon implements ActionListener {
 			popup.remove(exitPopup);
 			popup.remove(icbmLayout);
 			popup.remove(population);
+			popup.remove(bigPopulation);
 			popup.repaint();
 			JButton icbmClick = new JButton("CLICK!!"); // button that the user clicks to get a higher odds
 			popup.add(icbmClick);
